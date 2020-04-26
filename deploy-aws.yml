@@ -1,0 +1,16 @@
+---
+  - hosts: localhost
+    connection: local
+    gather_facts: no
+    environment:
+      AWS_ACCESS_KEY_ID: "{{ AWS_ACCESS_KEY_ID }}"
+      AWS_SECRET_ACCESS_KEY: "{{ AWS_SECRET_ACCESS_KEY }}"
+      AWS_REGION: "{{ AWS_REGION  }}"
+    vars_files:
+      - keys.yml
+    tasks:
+      - name: Change VPC
+        ec2_vpc_net:
+          name: Test_VPC
+          cidr_block: 10.0.0.0/16
+          region: eu-north-1
