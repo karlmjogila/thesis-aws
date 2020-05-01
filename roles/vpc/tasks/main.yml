@@ -4,7 +4,7 @@
 # Create private subnet
 - include: create_private_subnet.yml
 # # Create public subnet
-# - include: create_public_subnet.yml
+- include: create_public_subnet.yml
 # # Create internet gateway
 # - include: create_igw.yml
 # # Create public route table

@@ -1,1 +1,13 @@
 ---
+  - name: Create public subnet for webservers servers
+    ec2_vpc_subnet:
+      state: present
+      vpc_id: "{{ vpc_id }}"
+      cidr: "{{ public_subnet_cidr_block }}"
+      tags:
+        Name: "{{ vpc_name }}_public_sn"
+    register: public_subnet
+  
+  - name: Assign public subnet ID to variable
+    set_fact:
+      private_subnet_id: "{{ public_subnet.subnet.id }}"
