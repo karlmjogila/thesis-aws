@@ -2,10 +2,10 @@
 # Deploy VPC
   - import_playbook: vpc.yml
 # Deploy backups
-  - import_playbook: backups.yml
-# Deploy database servers
-  - import_playbook: dbservers.yml
-# Deploy webservers
-  - import_playbook: webservers.yml
-# Deploy monitoring
-  - import_playbook: monitoring.yml
+#   - import_playbook: backups.yml
+# # Deploy database servers
+#   - import_playbook: dbservers.yml
+# # Deploy webservers
+#   - import_playbook: webservers.yml
+# # Deploy monitoring
+#   - import_playbook: monitoring.yml

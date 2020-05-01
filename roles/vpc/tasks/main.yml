@@ -3,17 +3,17 @@
 - include: create_vpc.yml
 # Create private subnet
 - include: create_private_subnet.yml
-# Create public subnet
-- include: create_public_subnet.yml
-# Create internet gateway
-- include: create_igw.yml
-# Create public route table
-- include: create_public_rt.yml
-# Create security group for webservers
-- include: create_webserver_sg.yml
-# Create security group for database servers
-- include: create_db_sg.yml
-# Create security group for monitoring
-- include: create_monitoring_sg.yml
-# Create NAT gateway for private subnet
-- include: create_nat_gw.yml
+# # Create public subnet
+# - include: create_public_subnet.yml
+# # Create internet gateway
+# - include: create_igw.yml
+# # Create public route table
+# - include: create_public_rt.yml
+# # Create security group for webservers
+# - include: create_webserver_sg.yml
+# # Create security group for database servers
+# - include: create_db_sg.yml
+# # Create security group for monitoring
+# - include: create_monitoring_sg.yml
+# # Create NAT gateway for private subnet
+# - include: create_nat_gw.yml

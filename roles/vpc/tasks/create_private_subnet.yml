@@ -1,1 +1,13 @@
 ---
+- name: Create private subnet for database servers
+  ec2_vpc_subnet:
+    state: present
+    vpc_id: "{{ vpc_id }}"
+    cidr: "{{ private_subnet_cidr_block }}"
+    tags:
+      Name: "{{ vpc_name }}_private_sn"
+  register: private_subnet
+
+- name: Assign private subnet ID to variable
+  set_fact:
+    private_subnet_id: "{{ private_subnet.subnet.id }}"
