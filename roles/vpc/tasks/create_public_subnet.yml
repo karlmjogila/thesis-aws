@@ -4,6 +4,7 @@
       state: present
       vpc_id: "{{ vpc_id }}"
       cidr: "{{ public_subnet_cidr_block }}"
+      map_public: yes
       tags:
         Name: "{{ vpc_name }}_public_sn"
     register: public_subnet
