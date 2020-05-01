@@ -9,7 +9,7 @@
     vars_files:
       - keys.yml
     tasks:
-      - name: Change VPC
+      - name: Create VPC
         ec2_vpc_net:
           name: Test_VPC
           cidr_block: 10.0.0.0/16
