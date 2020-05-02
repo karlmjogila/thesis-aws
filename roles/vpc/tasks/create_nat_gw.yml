@@ -1,1 +1,12 @@
 ---
+- name: Create NAT gateway for servers in private subnet
+  ec2_vpc_nat_gateway:
+    state: present
+    subnet_id: "{{ private_subnet_id }}"
+    wait: true
+    if_exist_do_not_create: true
+  register: nat_gw
+
+- name: Assign NAT GW id to a variable
+  set_fact:
+    nat_gateway_id: "{{ nat_gw.nat_gateway_id }}"

@@ -1,1 +1,15 @@
 ---
+- name: Create security group for monitoring servers
+  ec2_group:
+    name: "{{ vpc_name }}_monitoring_sg"
+    description: "SG for monitoring"
+    vpc_id: "{{ vpc_id }}"
+    tags:
+      environment: "{{ project_env }}"
+  register: monitoring_sg
+
+- name: Assign monitoring security group properties to facts
+  set_fact:
+    monitoring_sg_id: "{{ monitoring_sg.group_id }}"
+    monitoring_sg_owner: "{{ monitoring_sg.owner_id }}"
+    monitoring_sg_name: "{{ monitoring_sg.group_name }}"

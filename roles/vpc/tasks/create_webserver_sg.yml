@@ -1,1 +1,28 @@
 ---
+- name: Create security group for webservers
+  ec2_group:
+    name: "{{ vpc_name }}_webserver_sg"
+    description: "SG for webservers"
+    vpc_id: "{{ vpc_id }}"
+    rules:
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 10050
+        to_port: 10050
+        group_id: "{{ monitoring_sg_owner }}/{{ monitoring_sg_id }}/{{ monitoring_sg_name }}"
+    tags:
+      environment: "{{ project_env }}"
+  register: webserver_sg
+
+- name: Assign webserver security group properties to facts
+  set_fact:
+    webserver_sg_id: "{{ webserver_sg.group_id }}"
+    webserver_sg_owner: "{{ webserver_sg.owner_id }}"
+    webserver_sg_name: "{{ webserver_sg.group_name }}"

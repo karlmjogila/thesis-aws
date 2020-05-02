@@ -1,1 +1,10 @@
 ---
+- name: Create internet gateway
+  ec2_vpc_igw:
+    vpc_id: "{{ vpc_id }}"
+    state: present
+  register: igw
+
+- name: Set internet gateway ID to a variable
+  set_fact:
+    igw_id: "{{ igw.gateway_id }}"

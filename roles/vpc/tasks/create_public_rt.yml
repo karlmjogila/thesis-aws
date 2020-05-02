@@ -1,1 +1,10 @@
 ---
+- name: Create route table for public subnet
+  ec2_vpc_route_table:
+    vpc_id: "{{ vpc_id }}"
+    subnets: "{{ public_subnet_id }}"
+    routes:
+      - dest: "0.0.0.0/0"
+        gateway_id: "{{ igw_id }}"
+    tags:
+      Name: "{{ vpc_id }}_public_rt"
