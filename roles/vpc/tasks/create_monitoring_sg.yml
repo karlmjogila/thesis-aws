@@ -4,6 +4,11 @@
     name: "{{ vpc_name }}_monitoring_sg"
     description: "SG for monitoring"
     vpc_id: "{{ vpc_id }}"
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        group_id: "{{ bastion_sg_owner }}/{{ bastion_sg_id }}/{{ bastion_sg_name }}"
     tags:
       environment: "{{ project_env }}"
   register: monitoring_sg

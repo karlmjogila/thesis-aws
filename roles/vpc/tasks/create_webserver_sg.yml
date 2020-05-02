@@ -17,6 +17,10 @@
         from_port: 10050
         to_port: 10050
         group_id: "{{ monitoring_sg_owner }}/{{ monitoring_sg_id }}/{{ monitoring_sg_name }}"
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        group_id: "{{ bastion_sg_owner }}/{{ bastion_sg_id }}/{{ bastion_sg_name }}"
     tags:
       environment: "{{ project_env }}"
   register: webserver_sg

@@ -1,0 +1,20 @@
+---
+- name: Create security group for bastion hosts
+  ec2_group:
+    name: "{{ vpc_name }}_bastion_sg"
+    description: "SG for bastion hosts"
+    vpc_id: "{{ vpc_id }}"
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+    tags:
+      environment: "{{ project_env }}"
+  register: bastion_sg
+
+- name: Assign bastion security group properties to facts
+  set_fact:
+    bastion_sg_id: "{{ bastion_sg.group_id }}"
+    bastion_sg_owner: "{{ bastion_sg.owner_id }}"
+    bastion_sg_name: "{{ bastion_sg.group_name }}"

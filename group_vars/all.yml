@@ -1,6 +1,7 @@
 ---
+# Variables used by VPC role
 vpc_name: "VPC1"
-vpc_cidr_block: 10.0.0.0/16
-private_subnet_cidr_block: 10.0.1.0/24
-public_subnet_cidr_block: 10.0.2.0/24
+vpc_cidr_block: 10.0.1.0/24
+private_subnet_cidr_block: 10.0.1.0/25
+public_subnet_cidr_block: 10.0.1.128/25
 project_env: development

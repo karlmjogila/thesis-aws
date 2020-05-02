@@ -10,6 +10,8 @@
 # Create public route table
 - include: create_public_rt.yml
 # Create security group for monitoring
+- include: create_bastion_sg.yml
+# Create security group for monitoring
 - include: create_monitoring_sg.yml
 # Create security group for webservers
 - include: create_webserver_sg.yml
