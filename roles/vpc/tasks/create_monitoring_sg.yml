@@ -10,7 +10,8 @@
         to_port: 22
         group_id: "{{ bastion_sg_owner }}/{{ bastion_sg_id }}/{{ bastion_sg_name }}"
     tags:
-      environment: "{{ project_env }}"
+      Name: "{{ vpc_name }}_monitoring_sg"
+      Environment: "{{ project_env }}"
   register: monitoring_sg
 
 - name: Assign monitoring security group properties to facts

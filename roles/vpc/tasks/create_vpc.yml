@@ -5,7 +5,8 @@
     region: "{{ AWS_REGION }}"
     state: present
     tags:
-      environment: "{{ project_env }}"
+      Name: "{{ vpc_name }}"
+      Environment: "{{ project_env }}"
   register: deployed_vpc
 
 - name: Assign VPC ID to a variable

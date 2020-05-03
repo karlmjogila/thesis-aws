@@ -1,0 +1,10 @@
+---
+- name: Create monitoring instance
+  include_role: 
+    name: provisioning
+  vars:
+    service_name: "Zabbix"
+    service_role: "Monitoring"
+    subnet_id: "{{ private_subnet_id }}"
+    security_group: "{{ monitoring_sg_id }}"
+  

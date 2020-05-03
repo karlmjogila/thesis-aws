@@ -9,8 +9,11 @@
   vars_files:
     - keys.yml
   tasks:
-    - name: Include VPC role
+    - name: Get VPC information
       include_role: 
         name: vpc
       vars:
-        create_initial_vpc: True
+        fetch_vpc_info: True
+    - name: Deploy bastion host
+      include_role: 
+        name: bastion

@@ -10,7 +10,8 @@
         to_port: 22
         cidr_ip: 0.0.0.0/0
     tags:
-      environment: "{{ project_env }}"
+      Name: "{{ vpc_name }}_bastion_sg"
+      Environment: "{{ project_env }}"
   register: bastion_sg
 
 - name: Assign bastion security group properties to facts

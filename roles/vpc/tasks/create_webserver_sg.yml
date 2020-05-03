@@ -22,7 +22,8 @@
         to_port: 22
         group_id: "{{ bastion_sg_owner }}/{{ bastion_sg_id }}/{{ bastion_sg_name }}"
     tags:
-      environment: "{{ project_env }}"
+      Name: "{{ vpc_name }}_webserver_sg"
+      Environment: "{{ project_env }}"
   register: webserver_sg
 
 - name: Assign webserver security group properties to facts

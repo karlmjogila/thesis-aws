@@ -3,6 +3,8 @@
   ec2_vpc_igw:
     vpc_id: "{{ vpc_id }}"
     state: present
+    tags:
+      VPC: "{{ vpc_name }}"
   register: igw
 
 - name: Set internet gateway ID to a variable

@@ -18,7 +18,8 @@
         to_port: 22
         group_id: "{{ bastion_sg_owner }}/{{ bastion_sg_id }}/{{ bastion_sg_name }}"
     tags:
-      environment: "{{ project_env }}"
+      Name: "{{ vpc_name }}_db_sg"
+      Environment: "{{ project_env }}"
   register: db_sg
 
 - name: Assign db servers security group ID to a variable

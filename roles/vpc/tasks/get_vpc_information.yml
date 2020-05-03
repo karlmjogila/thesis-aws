@@ -1,0 +1,77 @@
+- name: Get VPC information for deployment
+  ec2_vpc_net_info:
+    filters:
+      "tag:Name": "{{ vpc_name }}"
+  register: vpc_info
+
+- name: Set VPC id to a variable
+  set_fact:
+    vpc_id: "{{ vpc_info.vpcs | map(attribute='vpc_id') | join }}"
+  
+- name: Get public subnet information for deployment
+  ec2_vpc_subnet_info:
+    filters:
+      vpc-id: "{{ vpc_id }}"
+      "tag:Name": "{{ vpc_name }}_public_sn"
+  register: public_subnet_info
+
+- name: Set public subnet id to a variable
+  set_fact:
+    public_subnet_id: "{{ public_subnet_info.subnets | map(attribute='subnet_id') | join }}"
+
+- name: Get private subnet information for deployment
+  ec2_vpc_subnet_info:
+    filters:
+      vpc-id: "{{ vpc_id }}"
+      "tag:Name": "{{ vpc_name }}_private_sn"
+  register: private_subnet_info
+
+- name: Set private subnet id to a variable
+  set_fact:
+    private_subnet_id: "{{ private_subnet_info.subnets | map(attribute='subnet_id') | join }}"
+
+- name: Get monitoring security group info
+  ec2_group_info:
+    filters:
+      "tag:Name": "{{ vpc_name }}_monitoring_sg"
+  register: monitoring_sg_info
+
+- name: Set monitoring security group info to variables
+  set_fact:
+    monitoring_sg_id: "{{ monitoring_sg_info.security_groups | map(attribute='group_id') | join }}"
+    monitoring_sg_owner: "{{ monitoring_sg_info.security_groups | map(attribute='owner_id') | join }}"
+    monitoring_sg_name: "{{ monitoring_sg_info.security_groups | map(attribute='group_name') | join }}"
+
+- name: Get webserver security group info
+  ec2_group_info:
+    filters:
+      "tag:Name": "{{ vpc_name }}_webserver_sg"
+  register: webserver_sg_info
+
+- name: Set webserver security group info to variables
+  set_fact:
+    webserver_sg_id: "{{ webserver_sg_info.security_groups | map(attribute='group_id') | join }}"
+    webserver_sg_owner: "{{ webserver_sg_info.security_groups | map(attribute='owner_id') | join }}"
+    webserver_sg_name: "{{ webserver_sg_info.security_groups | map(attribute='group_name') | join }}"  
+
+- name: Get database security group info
+  ec2_group_info:
+    filters:
+      "tag:Name": "{{ vpc_name }}_db_sg"
+  register: db_sg_info
+  
+- name: Set database security group info to variables
+  set_fact:
+    db_sg_id: "{{ db_sg_info.security_groups | map(attribute='group_id') | join }}"
+
+- name: Get bastion security group info
+  ec2_group_info:
+    filters:
+      "tag:Name": "{{ vpc_name }}_bastion_sg"
+  register: bastion_sg_info
+
+- name: Set bastion security group info to variables
+  set_fact:
+    bastion_sg_id: "{{ bastion_sg_info.security_groups | map(attribute='group_id') | join }}"
+    bastion_sg_owner: "{{ bastion_sg_info.security_groups | map(attribute='owner_id') | join }}"
+    bastion_sg_name: "{{ bastion_sg_info.security_groups | map(attribute='group_name') | join }}"  
