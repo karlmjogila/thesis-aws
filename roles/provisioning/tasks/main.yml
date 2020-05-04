@@ -7,9 +7,15 @@
     security_group: "{{ security_group }}"
     instance_type: "{{ instance_type }}"
     image_id: "{{ image_id }}"
+    count: "{{ count }}"
     wait: yes
     tags:
       Role: "{{ service_role }}"
       Environment: "{{ project_env }}"
+  register: instance_info
+
+- name: Set instance information to a fact
+  set_fact:
+    "{{ service_name }}_instance_info": "{{ instance_info }}"
 
 

@@ -1,0 +1,14 @@
+---
+- name: Create database hosts
+  include_role:
+    name: provisioning
+  vars:
+    service_name: "db"
+    service_role: "database"
+    subnet_id: "{{ private_subnet_id }}"
+    security_group: "{{ db_sg_id }}"
+    count: "2"
+
+- name: Set databases instance id to a fact
+  set_fact:
+    bastion_host_id: "{{ bastion_instance_info.instances | map(attribute='instance_id') | join }}

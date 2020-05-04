@@ -11,6 +11,14 @@
   tasks:
     - name: Include VPC role
       include_role: 
-        name: vpc
+        name: "{{ role_name }}"
       vars:
         create_initial_vpc: True
+      loop:
+        - vpc
+        - bastion
+        - mysql
+        - nginx
+        - zabbix
+      loop_control:
+        loop_var: role_name

@@ -4,4 +4,4 @@
 ansible-playbook vpc.yml
 
 # Deploy bastion host
-ansible-playbook bastion.yml
+# ansible-playbook bastion.yml

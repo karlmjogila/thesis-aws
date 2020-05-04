@@ -1,9 +1,0 @@
----
-- name: Create bastion host
-  include_role:
-    name: provisioning
-  vars:
-    service_name: "Bastion"
-    service_role: "SSHGW"
-    subnet_id: "{{ public_subnet_id }}"
-    security_group: "{{ bastion_sg_id }}"
