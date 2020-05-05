@@ -7,7 +7,6 @@
     service_role: "webserver"
     subnet_id: "{{ private_subnet_id }}"
     security_group: "{{ webserver_sg_id }}"
-    count: "2"
 
 - name: Set webserver instance ids to a fact
   set_fact:

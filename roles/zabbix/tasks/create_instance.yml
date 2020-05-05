@@ -7,7 +7,6 @@
     service_role: "monitoring"
     subnet_id: "{{ public_subnet_id }}"
     security_group: "{{ monitoring_sg_id }}"
-    count: "1"
 
 - name: Set zabbix instance id to a fact
   set_fact:

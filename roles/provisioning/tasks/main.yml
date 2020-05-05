@@ -7,7 +7,6 @@
     security_group: "{{ security_group }}"
     instance_type: "{{ instance_type }}"
     image_id: "{{ image_id }}"
-    count: "{{ count }}"
     wait: yes
     tags:
       Role: "{{ service_role }}"

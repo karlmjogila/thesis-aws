@@ -7,7 +7,6 @@
     service_role: "database"
     subnet_id: "{{ private_subnet_id }}"
     security_group: "{{ db_sg_id }}"
-    count: "2"
 
 - name: Set databases instance id to a fact
   set_fact:
