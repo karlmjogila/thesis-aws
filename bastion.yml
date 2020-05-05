@@ -7,7 +7,7 @@
     AWS_SECRET_ACCESS_KEY: "{{ AWS_SECRET_ACCESS_KEY }}"
     AWS_REGION: "{{ AWS_REGION  }}"
   vars_files:
-    - keys.yml
+    - keys
   tasks:
     - name: Get VPC information
       include_role: 
