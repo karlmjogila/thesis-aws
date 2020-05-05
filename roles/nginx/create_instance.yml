@@ -1,29 +1,14 @@
 ---
-- name: Create bastion host
+- name: Create webserver hosts
   include_role:
     name: provisioning
   vars:
-    service_name: "bastion"
-    service_role: "bastion"
-    subnet_id: "{{ public_subnet_id }}"
-    security_group: "{{ bastion_sg_id }}"
+    service_name: "nginx"
+    service_role: "webserver"
+    subnet_id: "{{ private_subnet_id }}"
+    security_group: "{{ webserver_sg_id }}"
     count: "2"
 
-- name: Set bastion instance id to a fact
+- name: Set webserver instance ids to a fact
   set_fact:
-    bastion_host_id: "{{ bastion_instance_info.instances | map(attribute='instance_id') | join }}"
-
-- name: Assign elastic IP to bastion host
-  ec2_eip:
-    device_id: "{{ bastion_host_id }}"
-    in_vpc: true
-    state: present
-  register: elastic_ip
-
-- name: Set bastion host IP to a variable
-  set_fact:
-    bastion_ip: "{{ elastic_ip.public_ip }}"
-
-- name: Create dynamic inventory file
-  file:
-    
+    webserver_host_id: "{{ webserver_instance_info.instances | map(attribute='instance_id') | join }}"
