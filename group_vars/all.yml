@@ -1,4 +1,6 @@
 ---
+# Private key location
+private_key_location: /home/ansible/.ssh/aws/Frankfurt.pem
 # AWS region
 AWS_REGION: eu-central-1
 # Variables used by VPC role

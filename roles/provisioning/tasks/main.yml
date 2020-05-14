@@ -15,6 +15,6 @@
 
 - name: Set instance information to a fact
   set_fact:
-    "{{ service_name }}_instance_info": "{{ instance_info }}"
+    "{{ service_role }}_instance_info": "{{ instance_info }}"
 
 

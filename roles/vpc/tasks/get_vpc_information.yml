@@ -75,3 +75,13 @@
     bastion_sg_id: "{{ bastion_sg_info.security_groups | map(attribute='group_id') | join }}"
     bastion_sg_owner: "{{ bastion_sg_info.security_groups | map(attribute='owner_id') | join }}"
     bastion_sg_name: "{{ bastion_sg_info.security_groups | map(attribute='group_name') | join }}"  
+
+- name: Get bastion instance info
+  ec2_instance_info:
+    filters:
+      "tag:Name": "bastion"
+  register: bastion_instance_info
+
+- name: Set bastion host IP to a variable
+  set_fact:
+    bastion_ip: "{{ bastion_instance_info.instances | map(attribute='public_ip_address') | join }}"

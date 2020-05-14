@@ -1,8 +1,8 @@
 [defaults]
 inventory = hosts
-private_key_file = ~/.ssh/aws/Frankfurt.pem
+private_key_file = ~/.ssh/Frankfurt.pem
 remote_user = ubuntu
-vault_password_file = ~/.ansible.pass
+#vault_password_file = ~/.ansible.pass
 interpreter_python=/usr/bin/python3
 
 [inventory]

@@ -1,0 +1,8 @@
+---
+- name: Deploy nginx instances during VPC deploy
+  include_tasks: create_instance.yml
+  when: create_initial_vpc is defined and create_initial_vpc == True
+
+- name: Configure nginx host
+  include_tasks: configure_nginx.yml
+  when: configure_nginx_host is defined and configure_nginx_host == True

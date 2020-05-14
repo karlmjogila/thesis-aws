@@ -1,0 +1,15 @@
+aws_access_key: "{{ AWS_ACCESS_KEY_ID }}"
+aws_secret_key: "{{ AWS_SECRET_ACCESS_KEY }}"
+plugin: aws_ec2
+region: "{{ AWS_REGION }}"
+
+keyed_groups:
+  - key: tags.Role
+    separator: ''
+
+hostnames:
+  - private-ip-address
+
+compose:
+  ansible_host: private_ip_address
+  ansible_ssh_common_args: "'-o ProxyCommand=\"ssh -o StrictHostKeyChecking=no -i /home/ansible/.ssh/aws/Frankfurt.pem -W %h:%p -q ubuntu@{{ bastion_ip }}\"'"

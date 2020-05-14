@@ -1,0 +1,13 @@
+---
+- name: Create users
+  user:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default ("present") }}"
+    group: "{{ item.group | default (item.name) }}"
+    home: "{{ item.home | default("/home/"+item.name) }}"
+    shell: "/bin/bash"
+    password: "{{ item.password }}"
+    comment: "{{ item.comment | default("") }}"
+  with_items: "{{ users }}"
+  when: item.state != 'absent'
+

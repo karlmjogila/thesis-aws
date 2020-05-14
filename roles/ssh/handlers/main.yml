@@ -1,0 +1,6 @@
+---
+- name: Test SSHD config
+  command: sshd -t
+
+- name: Restart SSHD
+  service: name="ssh" state="restarted"

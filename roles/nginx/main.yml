@@ -1,4 +1,0 @@
----
-- name: Deploy web server instances during VPC deploy
-  include_tasks: create_instance.yml
-  when: create_initial_vpc is defined and create_initial_vpc == True

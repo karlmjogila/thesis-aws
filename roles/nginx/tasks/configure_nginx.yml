@@ -1,0 +1,23 @@
+---
+# Configure users
+- name: Configure users
+  include_role:
+    name: users
+
+# Configure SSH options
+- name: Configure SSH
+  include_role:
+    name: ssh
+
+# Configure autopatching
+- name: Configure autopatching
+  include_role:
+    name: patching
+
+- name: Install nginx packages
+
+- name: Install PHP packages
+
+- name: Configure nginx
+
+- name: Configure PHP

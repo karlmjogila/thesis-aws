@@ -11,3 +11,10 @@
 - name: Set webserver instance ids to a fact
   set_fact:
     webserver_host_id: "{{ webserver_instance_info.instances | map(attribute='instance_id') | join }}"
+    webserver_host_ip: "{{ webserver_instance_info.instances | map(attribute='private_ip_address') | join }}"
+
+- name: Add private ip to in-memory group
+  add_host:
+    hostname: "{{ webserver_host_ip }}"
+    groups:
+      - webserver

@@ -1,4 +1,8 @@
 ---
-- name: Deploy bastion instance during VPC deploy
+- name: Create bastion instance during VPC deployment
   include_tasks: create_instance.yml
   when: create_initial_vpc is defined and create_initial_vpc == True
+
+- name: Configure bastion host
+  include_tasks: configure_bastion.yml
+  when: configure_bastion_host is defined and configure_bastion_host == True

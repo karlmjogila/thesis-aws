@@ -14,6 +14,13 @@
         name: vpc
       vars:
         fetch_vpc_info: True
-    - name: Deploy bastion host
-      include_role: 
+
+- hosts: bastion
+  gather_facts: no
+  tasks:
+    - name: Configure bastion host
+      include_role:
         name: bastion
+      vars:
+        configure_bastion_host: True
+      

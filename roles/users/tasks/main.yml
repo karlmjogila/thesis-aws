@@ -1,0 +1,3 @@
+---
+# Create users on systems
+- include: users.yml

@@ -24,5 +24,7 @@
   set_fact:
     bastion_ip: "{{ elastic_ip.public_ip }}"
 
-# - name: Create dynamic inventory file
-#   file:
+- name: Create dynamic inventory file
+  template:
+    src: aws_ec2.j2
+    dest: ./aws_ec2.yml
