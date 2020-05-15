@@ -3,11 +3,29 @@
   include_role:
     name: provisioning
   vars:
-    service_name: "mysql"
-    service_role: "database"
+    instance_name: "{{ item }}"
+    instance_role: "database"
     subnet_id: "{{ private_subnet_id }}"
-    security_group: "{{ db_sg_id }}"
+    security_group: "{{ database_sg_id }}"
+  with_items:
+    - "{{ database_host_name }}"
 
-- name: Set databases instance id to a fact
+- name: Set database instance ids to a fact
+  vars:
+    fact_string: "{{ item }}_instance_info"
   set_fact:
-    db_host_id: "{{ db_instance_info.instances | map(attribute='instance_id') | join }}
+    "{{ item }}_host_id": "{{ hostvars['localhost'][fact_string].instance_ids | join }}"
+    "{{ item }}_host_ip": "{{ hostvars['localhost'][fact_string].instances[0].private_ip_address }}"
+  with_items:
+    - "{{ database_host_name }}"
+
+- name: Add private ip to in-memory group
+  vars:
+    ip_string: "{{ item }}_host_ip"
+  add_host:
+    hostname: "{{ item }}"
+    ansible_host: "{{ hostvars['localhost'][ip_string] }}"
+    groups:
+      - database
+  with_items:
+    - "{{ database_host_name }}"

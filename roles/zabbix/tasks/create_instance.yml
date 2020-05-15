@@ -3,22 +3,46 @@
   include_role:
     name: provisioning
   vars:
-    instance_name: "zabbix"
+    instance_name: "{{ item }}"
     instance_role: "monitoring"
     subnet_id: "{{ public_subnet_id }}"
     security_group: "{{ monitoring_sg_id }}"
+  with_items:
+    - "{{ monitoring_host_name }}"
 
-- name: Set zabbix instance id to a fact
+- name: Set monitoring instance id to a fact
+  vars:
+    fact_string: "{{ item }}_instance_info"
   set_fact:
-    monitoring_host_id: "{{ monitoring_instance_info.instances | map(attribute='instance_id') | join }}"
+    "{{ item }}_host_id": "{{ hostvars['localhost'][fact_string].instance_ids | join }}"
+    "{{ item }}_host_ip": "{{ hostvars['localhost'][fact_string].instances[0].private_ip_address }}"
+  with_items:
+    - "{{ monitoring_host_name }}"
 
 - name: Assign elastic IP to monitoring host
+  vars:
+    fact_string: "{{ item }}_host_id"
   ec2_eip:
-    device_id: "{{ monitoring_host_id }}"
+    device_id: "{{ hostvars['localhost'][fact_string] }}"
     in_vpc: true
     state: present
   register: elastic_ip
+  with_items:
+    - "{{ monitoring_host_name }}"
 
 - name: Set monitoring host IP to a variable
   set_fact:
-    monitoring_ip: "{{ elastic_ip.public_ip }}"
+    "{{ item }}_ip": "{{ elastic_ip.results | map(attribute='public_ip') | join }}"
+  with_items:
+    - "{{ monitoring_host_name }}"
+
+- name: Add private ip to in-memory group
+  vars:
+    ip_string: "{{ item }}_host_ip"
+  add_host:
+    hostname: "{{ item }}"
+    ansible_host: "{{ hostvars['localhost'][ip_string] }}"
+    groups:
+      - monitoring
+  with_items:
+    - "{{ monitoring_host_name }}"

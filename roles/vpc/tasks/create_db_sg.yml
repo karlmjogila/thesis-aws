@@ -1,7 +1,7 @@
 ---
 - name: Create security group for db servers
   ec2_group:
-    name: "{{ vpc_name }}_db_sg"
+    name: "{{ vpc_name }}_database_sg"
     description: "SG for db servers"
     vpc_id: "{{ vpc_id }}"
     rules:
@@ -18,10 +18,10 @@
         to_port: 22
         group_id: "{{ bastion_sg_owner }}/{{ bastion_sg_id }}/{{ bastion_sg_name }}"
     tags:
-      Name: "{{ vpc_name }}_db_sg"
+      Name: "{{ vpc_name }}_database_sg"
       Environment: "{{ project_env }}"
-  register: db_sg
+  register: database_sg
 
 - name: Assign db servers security group ID to a variable
   set_fact:
-    db_sg_id: "{{ db_sg.group_id }}"
+    database_sg_id: "{{ database_sg.group_id }}"

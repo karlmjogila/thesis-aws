@@ -1,4 +1,6 @@
 ---
 - import_playbook: vpc.yml
 - import_playbook: bastion.yml
+- import_playbook: monitoring.yml
 - import_playbook: webservers.yml
+- import_playbook: dbservers.yml

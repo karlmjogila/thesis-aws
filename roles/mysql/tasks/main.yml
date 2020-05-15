@@ -2,3 +2,7 @@
 - name: Deploy database instances during VPC deploy
   include_tasks: create_instance.yml
   when: create_initial_vpc is defined and create_initial_vpc == True
+
+- name: Configure database host
+  include_tasks: configure_database.yml
+  when: configure_database_host is defined and configure_database_host == True

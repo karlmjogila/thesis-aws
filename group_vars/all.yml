@@ -2,6 +2,9 @@
 # Instance names
 bastion_host_name: 'bastion'
 webserver_host_name: ['nginx1', 'nginx2']
+database_host_name: ['db01', 'db02']
+monitoring_host_name: 'zbx01'
+backup_s3_bucket_name: 'duplicity-backups'
 # Private key location
 private_key_location: /home/ansible/.ssh/aws/Frankfurt.pem
 # AWS region

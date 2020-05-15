@@ -1,1 +1,41 @@
 ---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ AWS_ACCESS_KEY_ID }}"
+    AWS_SECRET_ACCESS_KEY: "{{ AWS_SECRET_ACCESS_KEY }}"
+    AWS_REGION: "{{ AWS_REGION  }}"
+  vars_files:
+    - keys
+  tasks:
+    - name: Get VPC information
+      include_role: 
+        name: vpc
+      vars:
+        fetch_vpc_info: True
+      when: hostvars['localhost']['create_initial_vpc'] is not defined
+
+- hosts: database
+  gather_facts: no
+  become: true
+  vars:
+    ansible_ssh_common_args: "-o ProxyCommand='ssh -o StrictHostKeyChecking=no -i {{ private_key_location }} -W %h:%p -q ubuntu@{{ hostvars['localhost']['bastion_ip'] }}'"
+  tasks:
+    - name: Configure database servers
+      include_role:
+        name: mysql
+      vars:
+        configure_database_host: True
+      when: hostvars['localhost']['create_initial_vpc'] is defined
+
+- hosts: database
+  gather_facts: no
+  become: true
+  tasks:
+    - name: Configure database
+      include_role:
+        name: mysql
+      vars:
+        configure_database_host: True
+      when: hostvars['localhost']['create_initial_vpc'] is not defined

@@ -57,12 +57,12 @@
 - name: Get database security group info
   ec2_group_info:
     filters:
-      "tag:Name": "{{ vpc_name }}_db_sg"
-  register: db_sg_info
+      "tag:Name": "{{ vpc_name }}_database_sg"
+  register: database_sg_info
   
 - name: Set database security group info to variables
   set_fact:
-    db_sg_id: "{{ db_sg_info.security_groups | map(attribute='group_id') | join }}"
+    database_sg_id: "{{ database_sg_info.security_groups | map(attribute='group_id') | join }}"
 
 - name: Get bastion security group info
   ec2_group_info:
