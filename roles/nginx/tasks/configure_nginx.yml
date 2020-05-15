@@ -9,15 +9,15 @@
   include_role:
     name: ssh
 
-# Configure autopatching
-- name: Configure autopatching
-  include_role:
-    name: patching
+# # Configure autopatching
+# - name: Configure autopatching
+#   include_role:
+#     name: patching
 
-- name: Install nginx packages
+# - name: Install nginx packages
 
-- name: Install PHP packages
+# - name: Install PHP packages
 
-- name: Configure nginx
+# - name: Configure nginx
 
-- name: Configure PHP
+# - name: Configure PHP

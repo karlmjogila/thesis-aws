@@ -1,3 +1,5 @@
 ---
+# Create groups
+- include: groups.yml
 # Create users on systems
 - include: users.yml

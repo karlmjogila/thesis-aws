@@ -24,6 +24,12 @@
   set_fact:
     bastion_ip: "{{ elastic_ip.public_ip }}"
 
+- name: Add public_ip to in-memory group
+  add_host:
+    hostname: "{{ bastion_ip }}"
+    groups:
+      - bastion
+
 - name: Create dynamic inventory file
   template:
     src: aws_ec2.j2

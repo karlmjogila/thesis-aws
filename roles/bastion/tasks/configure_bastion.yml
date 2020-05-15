@@ -9,7 +9,7 @@
   include_role:
     name: users
 
-# Configure autopatching
-- name: Configure autopatching
-  include_role:
-    name: patching
+# # Configure autopatching
+# - name: Configure autopatching
+#   include_role:
+#     name: patching

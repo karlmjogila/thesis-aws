@@ -1,13 +1,31 @@
 ---
-- name: Create users
+- name: Create user
   user:
     name: "{{ item.name }}"
-    state: "{{ item.state | default ("present") }}"
-    group: "{{ item.group | default (item.name) }}"
-    home: "{{ item.home | default("/home/"+item.name) }}"
+    state: "{{ item.state | default('present') }}"
+    group: "{% if item.admin_user is defined and item.admin_user == True %}sudo{% else %}developers{% endif %}"
+    home: "{{ item.home | default('/home/'+item.name) }}"
     shell: "/bin/bash"
     password: "{{ item.password }}"
-    comment: "{{ item.comment | default("") }}"
-  with_items: "{{ users }}"
+    comment: "{{ item.comment | default('') }}"
+    append: yes
+  with_items: 
+    - "{{ users }}"
   when: item.state != 'absent'
 
+- name: Add SSH key to user
+  authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ item.ssh_key }}"
+    state: "{{ item.state | default('present') }}"
+  with_items: 
+    - "{{ users }}"
+  when: item.state != 'absent'
+
+- name: Delete user
+  user:
+    name: "{{ item.name }}"
+    state: absent
+  with_items: 
+    - "{{ users }}"
+  when: item.state == 'absent'

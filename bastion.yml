@@ -1,26 +1,27 @@
 ---
-- hosts: localhost
-  connection: local
-  gather_facts: no
-  environment:
-    AWS_ACCESS_KEY_ID: "{{ AWS_ACCESS_KEY_ID }}"
-    AWS_SECRET_ACCESS_KEY: "{{ AWS_SECRET_ACCESS_KEY }}"
-    AWS_REGION: "{{ AWS_REGION  }}"
-  vars_files:
-    - keys
-  tasks:
-    - name: Get VPC information
-      include_role: 
-        name: vpc
-      vars:
-        fetch_vpc_info: True
+# - hosts: localhost
+#   connection: local
+#   gather_facts: no
+#   environment:
+#     AWS_ACCESS_KEY_ID: "{{ AWS_ACCESS_KEY_ID }}"
+#     AWS_SECRET_ACCESS_KEY: "{{ AWS_SECRET_ACCESS_KEY }}"
+#     AWS_REGION: "{{ AWS_REGION  }}"
+#   vars_files:
+#     - keys
+#   tasks:
+#     - name: Get VPC information
+#       include_role: 
+#         name: vpc
+#       vars:
+#         fetch_vpc_info: True
+#       when: create_initial_vpc is not defined and create_initial_vpc != True
 
 - hosts: bastion
   gather_facts: no
+  become: true
   tasks:
     - name: Configure bastion host
       include_role:
         name: bastion
       vars:
         configure_bastion_host: True
-      

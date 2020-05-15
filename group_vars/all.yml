@@ -5,11 +5,22 @@ private_key_location: /home/ansible/.ssh/aws/Frankfurt.pem
 AWS_REGION: eu-central-1
 # Variables used by VPC role
 vpc_name: "VPC1"
-vpc_cidr_block: 10.0.1.0/24
-private_subnet_cidr_block: 10.0.1.0/25
-public_subnet_cidr_block: 10.0.1.128/25
+vpc_cidr_block: 10.0.0.0/16
+private_subnet_cidr_block: 10.0.1.0/24
+public_subnet_cidr_block: 10.0.2.0/24
 project_env: development
 # EC2 Instance deployment
 key_name: Frankfurt
 instance_type: t3.micro
 image_id: ami-05c26ae4789875080
+# Users and groups
+users:
+  - name: karl
+    comment: "Karl Markus Jogila"
+    password: '$6$818b1cff6482f9f6$MM1Jjo2zSWRlYNxJFdc0i7AZZ0icmQ9aJ2ryrw1EfkbOdJrpcw9R2p.KEnPrmXrXLH/aO2qZoAZcz5SggI9Kv1'
+    state: present
+    admin_user: yes
+    ssh_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsUUwakNXVXwOtRLWDhaqr9YwgaZht8AM957FVvurXAxFDw7kDswvtXhEMiB0ije2khocZSnJnTtklVqo8Wd68J/d9ggs3dI2tO51chJW0xTF/62XpXUOwvCUHrK03qMIQwecq3PEC1vUVQ1ynhvE9UIBlM46HBTy6g4W5n+hqZe08OEM0wcTETg5bL2/yh/19ZhFbIJalofc6RU8HjO4zw2IvQyz2txxFZGTKCurfc9ZEiDqcm4++J2YGR2mV63oHO7MO+0NizbDYtoHhdtrQ4+eDthlFkMbdKqpe6BC/3W5/2V+b3icav80EdGw/nuS+KdQxCHSHjdsgQL4/n6W1'
+user_groups:
+  - name: developers
+    state: present
