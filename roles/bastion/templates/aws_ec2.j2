@@ -8,8 +8,9 @@ keyed_groups:
     separator: ''
 
 hostnames:
-  - private-ip-address
+  - tag:Name
 
 compose:
   ansible_host: private_ip_address
+  ansible_hostname: tag:Name
   ansible_ssh_common_args: "'-o ProxyCommand=\"ssh -o StrictHostKeyChecking=no -i /home/ansible/.ssh/aws/Frankfurt.pem -W %h:%p -q ubuntu@{{ bastion_ip }}\"'"

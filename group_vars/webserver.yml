@@ -1,1 +1,1 @@
-#ansible_ssh_common_args: '-o ProxyCommand="ssh -o StrictHostKeyChecking=no -i /home/ansible/.ssh/aws/Frankfurt.pem -W %h:%p -q ubuntu@18.196.202.176"'
+#webserver_names: ['nginx1', 'nginx2']

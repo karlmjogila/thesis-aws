@@ -1,7 +1,7 @@
 ---
-- name: Create {{ service_name }} instance
+- name: Create {{ instance_name }} instance
   ec2_instance:
-    name: "{{ service_name }}"
+    name: "{{ instance_name }}"
     key_name: "{{ key_name }}"
     vpc_subnet_id: "{{ subnet_id }}"
     security_group: "{{ security_group }}"
@@ -9,12 +9,12 @@
     image_id: "{{ image_id }}"
     wait: yes
     tags:
-      Role: "{{ service_role }}"
+      Role: "{{ instance_role }}"
       Environment: "{{ project_env }}"
   register: instance_info
 
 - name: Set instance information to a fact
   set_fact:
-    "{{ service_role }}_instance_info": "{{ instance_info }}"
+    "{{ instance_name }}_instance_info": "{{ instance_info }}"
 
 

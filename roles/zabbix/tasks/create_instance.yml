@@ -3,8 +3,8 @@
   include_role:
     name: provisioning
   vars:
-    service_name: "zabbix"
-    service_role: "monitoring"
+    instance_name: "zabbix"
+    instance_role: "monitoring"
     subnet_id: "{{ public_subnet_id }}"
     security_group: "{{ monitoring_sg_id }}"
 

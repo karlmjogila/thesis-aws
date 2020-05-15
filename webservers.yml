@@ -27,3 +27,16 @@
         name: nginx
       vars:
         configure_nginx_host: True
+      when: hostvars['localhost']['create_initial_vpc'] is defined
+
+- hosts: webserver
+  gather_facts: no
+  become: true
+  tasks:
+    - name: Configure webservers
+      include_role:
+        name: nginx
+      vars:
+        configure_nginx_host: True
+      when: hostvars['localhost']['create_initial_vpc'] is not defined
+    

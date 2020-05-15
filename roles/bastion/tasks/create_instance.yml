@@ -3,32 +3,46 @@
   include_role:
     name: provisioning
   vars:
-    service_name: "bastion"
-    service_role: "bastion"
+    instance_name: "{{ item }}"
+    instance_role: "bastion"
     subnet_id: "{{ public_subnet_id }}"
     security_group: "{{ bastion_sg_id }}"
-    count: "1"
+  with_items:
+    - "{{ bastion_host_name }}"
 
 - name: Set bastion instance id to a fact
+  vars:
+    fact_string: "{{ item }}_instance_info"
   set_fact:
-    bastion_host_id: "{{ bastion_instance_info.instances | map(attribute='instance_id') | join }}"
+    "{{ item }}_host_id": "{{ hostvars['localhost'][fact_string].instance_ids | join }}"
+  with_items:
+    - "{{ bastion_host_name }}"
 
 - name: Assign elastic IP to bastion host
   ec2_eip:
-    device_id: "{{ bastion_host_id }}"
+    device_id: "{{ item }}"
     in_vpc: true
     state: present
   register: elastic_ip
+  with_items:
+    - "{{ bastion_host_id }}"
 
 - name: Set bastion host IP to a variable
   set_fact:
-    bastion_ip: "{{ elastic_ip.public_ip }}"
+    "{{ item }}_ip": "{{ elastic_ip.results | map(attribute='public_ip') | join }}"
+  with_items:
+    - "{{ bastion_host_name }}"
 
 - name: Add public_ip to in-memory group
+  vars:
+    ip_string: "{{ item }}_ip"
   add_host:
-    hostname: "{{ bastion_ip }}"
+    hostname: "{{ item }}"
+    ansible_host: "{{ hostvars['localhost'][ip_string] }}"
     groups:
       - bastion
+  with_items:
+    - "{{ bastion_host_name }}"
 
 - name: Create dynamic inventory file
   template:
