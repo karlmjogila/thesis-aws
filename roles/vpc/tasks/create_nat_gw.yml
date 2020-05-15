@@ -2,7 +2,7 @@
 - name: Create NAT gateway for servers in private subnet
   ec2_vpc_nat_gateway:
     state: present
-    subnet_id: "{{ private_subnet_id }}"
+    subnet_id: "{{ public_subnet_id }}"
     wait: true
     if_exist_do_not_create: true
   register: nat_gw
