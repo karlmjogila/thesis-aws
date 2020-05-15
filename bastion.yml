@@ -14,7 +14,7 @@
         name: vpc
       vars:
         fetch_vpc_info: True
-      when: create_initial_vpc is not defined and create_initial_vpc != True
+      when: hostvars['localhost']['create_initial_vpc'] is not defined
 
 - hosts: bastion
   gather_facts: no
