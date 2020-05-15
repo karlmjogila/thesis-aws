@@ -84,4 +84,4 @@
 
 - name: Set bastion host IP to a variable
   set_fact:
-    bastion_ip: "{{ bastion_instance_info.instances | map(attribute='public_ip_address') }}"
+    bastion_ip: "{{ bastion_instance_info.instances[0].public_ip_address }}"

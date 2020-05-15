@@ -22,3 +22,6 @@
         # - zabbix
       loop_control:
         loop_var: role_name
+    - name: Set create_initial_vpc to fact
+      set_fact:
+        create_initial_vpc: True
