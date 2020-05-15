@@ -17,8 +17,8 @@
       loop:
         - vpc
         - bastion
-        - nginx
-        - mysql
+        # - nginx
+        # - mysql
         - zabbix
       loop_control:
         loop_var: role_name

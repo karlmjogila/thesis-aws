@@ -22,6 +22,10 @@
   vars:
     ansible_ssh_common_args: "-o ProxyCommand='ssh -o StrictHostKeyChecking=no -i {{ private_key_location }} -W %h:%p -q ubuntu@{{ hostvars['localhost']['bastion_ip'] }}'"
   tasks:
+    - name: Patch bastion host
+      include_role:
+        name: patching
+      when: hostvars['localhost']['create_initial_vpc'] is defined
     - name: Configure monitoring
       include_role:
         name: zabbix
@@ -38,3 +42,4 @@
         name: zabbix
       vars:
         configure_monitoring_host: True
+      when: hostvars['localhost']['create_initial_vpc'] is not defined

@@ -1,0 +1,32 @@
+---
+- hosts: webserver
+  gather_facts: no
+  become: true
+  tasks:
+    - name: Include patching role
+      include_role:
+        name: patching
+
+- hosts: database
+  gather_facts: no
+  become: true
+  tasks:
+    - name: Include patching role
+      include_role:
+        name: patching
+
+- hosts: monitoring
+  gather_facts: no
+  become: true
+  tasks:
+    - name: Include patching role
+      include_role:
+        name: patching
+
+- hosts: bastion
+  gather_facts: no
+  become: true
+  tasks:
+    - name: Include patching role
+      include_role:
+        name: patching

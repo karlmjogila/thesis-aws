@@ -9,7 +9,7 @@
   include_role:
     name: ssh
 
-# # Configure autopatching
+# Configure autopatching
 # - name: Configure autopatching
 #   include_role:
 #     name: patching

@@ -20,8 +20,13 @@
   gather_facts: no
   become: true
   tasks:
+    - name: Patch bastion host
+      include_role:
+        name: patching
+      when: hostvars['localhost']['create_initial_vpc'] is defined
     - name: Configure bastion host
       include_role:
         name: bastion
       vars:
         configure_bastion_host: True
+      when: hostvars['localhost']['create_initial_vpc'] is defined

@@ -16,5 +16,3 @@
 - name: Set instance information to a fact
   set_fact:
     "{{ instance_name }}_instance_info": "{{ instance_info }}"
-
-
