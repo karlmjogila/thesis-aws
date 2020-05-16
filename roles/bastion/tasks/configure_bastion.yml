@@ -1,16 +1,10 @@
 ---
-# Configure SSH options
+# Configure SSH
 - name: Configure SSH
   include_role:
     name: ssh
 
-# Configure users
+# Configure users and groups
 - name: Configure users
   include_role:
     name: users
-
-# Configure autopatching
-# - name: Configure autopatching
-#   include_role:
-#     name: patching
-#   when: 

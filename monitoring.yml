@@ -17,12 +17,13 @@
       when: hostvars['localhost']['create_initial_vpc'] is not defined
 
 - hosts: monitoring
-  gather_facts: no
   become: true
   vars:
     ansible_ssh_common_args: "-o ProxyCommand='ssh -o StrictHostKeyChecking=no -i {{ private_key_location }} -W %h:%p -q ubuntu@{{ hostvars['localhost']['bastion_ip'] }}'"
+  vars_files:
+    - keys
   tasks:
-    - name: Patch bastion host
+    - name: Patch monitoring host
       include_role:
         name: patching
       when: hostvars['localhost']['create_initial_vpc'] is defined
@@ -34,8 +35,9 @@
       when: hostvars['localhost']['create_initial_vpc'] is defined
 
 - hosts: monitoring
-  gather_facts: no
   become: true
+  vars_files:
+    - keys
   tasks:
     - name: Configure monitoring host
       include_role:

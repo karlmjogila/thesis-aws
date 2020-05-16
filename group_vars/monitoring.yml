@@ -1,0 +1,6 @@
+zabbix_gpg_key_id: A14FE591
+zabbix_version: '5.0'
+zabbix_webui_url: 'zabbix.thesisbs.eu'
+zabbix_database_name: 'zabbix'
+zabbix_database_user: 'zabbix'
+zabbix_timezone: 'Europe/Tallinn'

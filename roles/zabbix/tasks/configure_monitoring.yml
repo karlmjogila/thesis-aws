@@ -9,7 +9,5 @@
   include_role:
     name: users
 
-# Configure autopatching
-# - name: Configure autopatching
-#   include_role:
-#     name: patching
+- name: Install and configure Zabbix
+  include_tasks: configure_zabbix.yml

@@ -1,0 +1,112 @@
+---
+- name: Set Zabbix repository URL to a fact
+  set_fact:
+    zabbix_repo: "http://repo.zabbix.com/zabbix/{{ zabbix_version }}/{{ ansible_distribution.lower() }} {{ ansible_distribution_release }} main"
+
+- name: Install Zabbix GPG key
+  apt_key:
+    id: "{{ zabbix_gpg_key_id }}"
+    url: http://repo.zabbix.com/zabbix-official-repo.key
+
+- name: Install Zabbix repository
+  apt_repository:
+    repo: "{{ item }} {{ zabbix_repo }}"
+    state: present
+  with_items:
+    - deb-src
+    - deb
+
+- name: Install Zabbix server packages
+  apt:
+    pkg: ['zabbix-server-mysql', 'zabbix-frontend-php', 'zabbix-nginx-conf']
+    state: present
+    update_cache: yes
+    install_recommends: yes
+
+- name: Install Ansible module dependencies
+  apt:
+    name: ['python3-psycopg2', 'python3-mysqldb', 'mariadb-client']
+    state: present
+    update_cache: yes
+
+- name: Create MySQL database
+  mysql_db:
+    name: "{{ zabbix_database_name }}"
+    encoding: utf8
+    collation: utf8_bin
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  register: zabbix_db_creation
+
+- name: Create MySQL user
+  mysql_user:
+    name: "{{ zabbix_database_user }}"
+    host: localhost
+    password: "{{ zabbix_database_password }}"
+    priv: "{{ zabbix_database_name }}.*:ALL,GRANT"
+    state: present
+
+- name: Import database
+  mysql_db:
+    name: "{{ zabbix_database_name }}"
+    encoding: utf8
+    collation: utf8_bin
+    state: import
+    target: '/usr/share/doc/zabbix-server-mysql/create.sql.gz'
+  when: zabbix_db_creation.changed
+
+- name: Configure zabbix-server
+  template:
+    src: zabbix_server.conf.j2
+    dest: /etc/zabbix/zabbix_server.conf
+    owner: zabbix
+    group: zabbix
+    mode: 0640
+
+- name: Configure Zabbix PHP file
+  template:
+    src: zabbix.conf.php.j2
+    dest: /usr/share/zabbix/conf/zabbix.conf.php
+    owner: www-data
+    group: www-data
+    mode: 0640
+
+- name: Configure nginx
+  template:
+    src: nginx.conf.j2
+    dest: /etc/zabbix/nginx.conf
+    owner: root
+    group: root
+    mode: 0640
+
+- name: Remove default nginx file
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Configure PHP-FPM
+  template:
+    src: php-fpm.conf.j2
+    dest: /etc/zabbix/php-fpm.conf
+    owner: root
+    group: root
+    mode: 0640
+
+- name: Restart services
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - zabbix-server
+    - nginx
+    - php7.4-fpm
+
+- name: Enable services
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - zabbix-server
+    - nginx
+    - php7.4-fpm
