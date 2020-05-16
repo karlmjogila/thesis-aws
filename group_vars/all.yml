@@ -7,12 +7,13 @@ monitoring_host_name: 'zbx01'
 backup_s3_bucket_name: 'duplicity-backups'
 # Private key location
 private_key_location: /home/ansible/.ssh/aws/Frankfurt.pem
-# Custom domain
+# Let's encrypt variables
 domain_name: 'thesisbs.eu'
+acme_account_email: 'karlmjogila@gmail.com'
 # AWS region
 AWS_REGION: 'eu-central-1'
 # Variables used by VPC role
-vpc_name: "VPC1"
+vpc_name: 'VPC1'
 vpc_cidr_block: 10.0.0.0/16
 private_subnet_cidr_block: 10.0.1.0/24
 public_subnet_cidr_block: 10.0.2.0/24
