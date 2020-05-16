@@ -71,6 +71,13 @@
     group: www-data
     mode: 0640
 
+- name: Upload certificates
+  include_role:
+    name: le
+  vars:
+    upload_certificate: True
+  when: issue_le_certificate == True
+
 - name: Configure nginx
   template:
     src: nginx.conf.j2

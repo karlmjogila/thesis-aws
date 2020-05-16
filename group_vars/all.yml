@@ -8,6 +8,7 @@ backup_s3_bucket_name: 'duplicity-backups'
 # Private key location
 private_key_location: /home/ansible/.ssh/aws/Frankfurt.pem
 # Let's encrypt variables
+issue_le_certificate: True
 domain_name: 'thesisbs.eu'
 acme_account_email: 'karlmjogila@gmail.com'
 # AWS region

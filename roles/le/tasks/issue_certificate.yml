@@ -1,0 +1,80 @@
+---
+- name: Set domain name to a fact
+  set_fact:
+    le_cert_domain: "{{ domain_name }}"
+    wildcard: "*.{{ domain_name }}"
+
+- name: Create private key directory
+  file:
+    path: './ssl'
+    state: directory
+    owner: ansible
+    group: ansible
+
+- name: Create private key for ACME account
+  openssl_privatekey:
+    path: "./ssl/account.key"
+    size: 4096
+
+- name: Create private key for certificate account
+  openssl_privatekey:
+    path: "./ssl/{{ le_cert_domain }}.key"
+    size: 4096
+
+- name: Generate CSR for {{ le_cert_domain }}
+  openssl_csr:
+    path: "./ssl/{{ le_cert_domain }}.csr"
+    privatekey_path: "./ssl/{{ le_cert_domain }}.key"
+    common_name: "{{ wildcard }}"
+
+- name: Make sure ACME account exists
+  acme_account:
+    account_key_src: "./ssl/account.key"
+    acme_version: 2
+    acme_directory: 'https://acme-v02.api.letsencrypt.org/directory'
+    state: present
+    terms_agreed: yes
+    contact:
+      - "mailto:{{ acme_account_email }}"
+
+- name: Create challenge for {{ le_cert_domain }}
+  acme_certificate:
+    modify_account: no
+    acme_directory: 'https://acme-v02.api.letsencrypt.org/directory'
+    acme_version: 2
+    account_key_src: "./ssl/account.key"
+    src: "./ssl/{{ le_cert_domain }}.csr"
+    cert: "./ssl/{{ le_cert_domain }}.crt"
+    challenge: dns-01
+    remaining_days: 60
+  register: dns_challenge
+
+- name: Create Route53 DNS entry
+  route53:
+    zone: "{{ le_cert_domain }}"
+    record: '{{ dns_challenge.challenge_data[wildcard]["dns-01"]["record"] }}'
+    type: TXT
+    ttl: 60
+    state: present
+    wait: yes
+    value: '"{{ dns_challenge.challenge_data[wildcard]["dns-01"]["resource_value"] }}"'
+    overwrite: yes
+
+- name: Wait for DNS record to expire
+  pause:
+    seconds: 120
+
+- name: Let the challenge be validated and retrieve the cert and intermediate certificate
+  acme_certificate:
+    modify_account: no
+    account_key_src: "./ssl/account.key"
+    src: "./ssl/{{ le_cert_domain }}.csr"
+    cert: "./ssl/{{ le_cert_domain }}.crt"
+    fullchain: "./ssl/{{ le_cert_domain }}-fullchain.crt"
+    chain: "./ssl/{{ le_cert_domain }}-intermediate.crt"
+    challenge: dns-01
+    acme_version: 2
+    acme_directory: 'https://acme-v02.api.letsencrypt.org/directory'
+    remaining_days: 60
+    data: "{{ dns_challenge }}"
+  when: dns_challenge is changed
