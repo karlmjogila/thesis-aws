@@ -17,9 +17,9 @@
       loop:
         - vpc
         - bastion
-        # - nginx
-        # - mysql
         - zabbix
+        - nginx
+        # - mysql
       loop_control:
         loop_var: role_name
     - name: Set create_initial_vpc to fact

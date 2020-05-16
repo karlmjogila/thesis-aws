@@ -7,7 +7,9 @@
     security_group: "{{ security_group }}"
     instance_type: "{{ instance_type }}"
     image_id: "{{ image_id }}"
+    state: running
     wait: yes
+    wait_timeout: 60
     tags:
       Role: "{{ instance_role }}"
       Environment: "{{ project_env }}"

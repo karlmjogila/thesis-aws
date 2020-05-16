@@ -1,0 +1,33 @@
+---
+- name: Add GPG key and repository
+  include_tasks: configure_repo.yml
+
+- name: Install Zabbix agent
+  apt:
+    name: zabbix-agent
+    update_cache: yes
+    state: latest
+
+- name: Install Zabbix API PIP module
+  pip:
+    name: zabbix-api
+
+- name: Configure Zabbix agent
+  template:
+    src: zabbix_agentd.conf.j2
+    dest: /etc/zabbix/zabbix_agentd.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Restart agent
+  
+- name: Upload PSK file
+  template:
+    src: zabbix_agentd.psk.j2
+    dest: /etc/zabbix/zabbix_agentd.psk
+    owner: root
+    group: zabbix
+    mode: '0640'
+  notify:
+    - Restart agent

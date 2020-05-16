@@ -17,14 +17,19 @@
       when: hostvars['localhost']['create_initial_vpc'] is not defined
 
 - hosts: webserver
-  gather_facts: no
   become: true
+  vars_files:
+    - keys
   vars:
     ansible_ssh_common_args: "-o ProxyCommand='ssh -o StrictHostKeyChecking=no -i {{ private_key_location }} -W %h:%p -q ubuntu@{{ hostvars['localhost']['bastion_ip'] }}'"
   tasks:
     - name: Patch webserver hosts
       include_role:
         name: patching
+      when: hostvars['localhost']['create_initial_vpc'] is defined
+    - name: Install common packages
+      include_role:
+        name: common
       when: hostvars['localhost']['create_initial_vpc'] is defined
     - name: Configure webservers
       include_role:
@@ -34,8 +39,9 @@
       when: hostvars['localhost']['create_initial_vpc'] is defined
 
 - hosts: webserver
-  gather_facts: no
   become: true
+  vars_files:
+    - keys
   tasks:
     - name: Configure webservers
       include_role:

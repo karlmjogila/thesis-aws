@@ -1,0 +1,17 @@
+---
+- name: Set Zabbix repository URL to a fact
+  set_fact:
+    zabbix_repo: "http://repo.zabbix.com/zabbix/{{ zabbix_version }}/{{ ansible_distribution.lower() }} {{ ansible_distribution_release }} main"
+
+- name: Install Zabbix GPG key
+  apt_key:
+    id: "{{ zabbix_gpg_key_id }}"
+    url: http://repo.zabbix.com/zabbix-official-repo.key
+
+- name: Install Zabbix repository
+  apt_repository:
+    repo: "{{ item }} {{ zabbix_repo }}"
+    state: present
+  with_items:
+    - deb-src
+    - deb

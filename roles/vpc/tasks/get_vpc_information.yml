@@ -92,6 +92,9 @@
       "tag:Name": "{{ monitoring_host_name }}"
   register: monitoring_instance_info
 
-- name: Set monitoring host IP to a variable
+- name: Set monitoring host IP's to a variable
   set_fact:
-    monitoring_ip: "{{ monitoring_instance_info.instances[0].public_ip_address }}"
+    monitoring_public_ip: "{{ monitoring_instance_info.instances[0].public_ip_address }}"
+    monitoring_private_ip: "{{ monitoring_instance_info.instances[0].private_ip_address }}"
+
+

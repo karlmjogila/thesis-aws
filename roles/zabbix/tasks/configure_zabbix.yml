@@ -1,24 +1,10 @@
 ---
-- name: Set Zabbix repository URL to a fact
-  set_fact:
-    zabbix_repo: "http://repo.zabbix.com/zabbix/{{ zabbix_version }}/{{ ansible_distribution.lower() }} {{ ansible_distribution_release }} main"
-
-- name: Install Zabbix GPG key
-  apt_key:
-    id: "{{ zabbix_gpg_key_id }}"
-    url: http://repo.zabbix.com/zabbix-official-repo.key
-
-- name: Install Zabbix repository
-  apt_repository:
-    repo: "{{ item }} {{ zabbix_repo }}"
-    state: present
-  with_items:
-    - deb-src
-    - deb
+- name: Add GPG key and repository
+  include_tasks: configure_repo.yml
 
 - name: Install Zabbix server packages
   apt:
-    pkg: ['zabbix-server-mysql', 'zabbix-frontend-php', 'zabbix-nginx-conf']
+    name: ['zabbix-server-mysql', 'zabbix-frontend-php', 'zabbix-nginx-conf']
     state: present
     update_cache: yes
     install_recommends: yes
@@ -55,6 +41,12 @@
     target: '/usr/share/doc/zabbix-server-mysql/create.sql.gz'
   when: zabbix_db_creation.changed
 
+- name: Update Admin user password
+  vars:
+    query: "UPDATE zabbix.users SET passwd=md5('{{ zabbix_admin_password }}') where alias='Admin'"
+  command: mysql -u root zabbix --execute "{{ query }}";
+  when: zabbix_db_creation.changed
+
 - name: Configure zabbix-server
   template:
     src: zabbix_server.conf.j2
@@ -70,6 +62,8 @@
     owner: www-data
     group: www-data
     mode: 0640
+  notify:
+    - Restart server
 
 - name: Upload certificates
   include_role:
@@ -85,6 +79,8 @@
     owner: root
     group: root
     mode: 0640
+  notify:
+    - Restart nginx
 
 - name: Remove default nginx file
   file:
@@ -98,15 +94,17 @@
     owner: root
     group: root
     mode: 0640
+  notify:
+    - Restart php-fpm
 
-- name: Restart services
-  service:
-    name: "{{ item }}"
-    state: restarted
-  with_items:
-    - zabbix-server
-    - nginx
-    - php7.4-fpm
+# - name: Restart services
+#   service:
+#     name: "{{ item }}"
+#     state: restarted
+#   with_items:
+#     - zabbix-server
+#     - nginx
+#     - php7.4-fpm
 
 - name: Enable services
   service:

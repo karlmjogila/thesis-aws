@@ -9,10 +9,65 @@
   include_role:
     name: users
 
+# Configure Zabbix agent
+- name: Configure Zabbix agent
+  include_role:
+    name: zabbix
+  vars:
+    zabbix_agent: True
+
+- name: Add host to Zabbix
+  zabbix_host:
+    server_url: "https://{{ zabbix_webui_url }}"
+    login_user: Admin
+    login_password: "{{ zabbix_admin_password }}"
+    host_name: "{{ inventory_hostname }}"
+    status: enabled
+    state: present
+    tls_psk_identity: "{{ zabbix_tls_identity_name }}"
+    tls_connect: 2
+    tls_psk: "{{ zabbix_tls_identity_password }}"
+    tls_accept: 2
+    host_groups:
+      - Linux servers
+    link_templates:
+      - Template OS Linux by Zabbix agent
+      - Template App Nginx by Zabbix agent
+    interfaces:
+      - type: 1
+        main: 1
+        useip: 1
+        ip: "{{ ansible_default_ipv4.address }}"
+    validate_certs: no
+
 # - name: Install nginx packages
+- name: Install nginx package
+  apt:
+    name: nginx
+    state: latest
+    update_cache: yes
 
-# - name: Install PHP packages
+- name: Install PHP packages
+  apt:
+    name: ['php-fpm', 'php-mysql']
+    state: latest
+    update_cache: yes
 
-# - name: Configure nginx
+- name: Configure nginx
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Remove default vhost
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+
+
+
 
 # - name: Configure PHP

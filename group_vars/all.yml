@@ -11,8 +11,6 @@ private_key_location: /home/ansible/.ssh/aws/Frankfurt.pem
 issue_le_certificate: True
 domain_name: 'thesisbs.eu'
 acme_account_email: 'karlmjogila@gmail.com'
-# Zabbix URL
-zabbix_webui_url: 'zabbix.thesisbs.eu'
 # AWS region
 AWS_REGION: 'eu-central-1'
 # Variables used by VPC role
@@ -36,3 +34,10 @@ users:
 user_groups:
   - name: developers
     state: present
+# Zabbix variables
+zabbix_gpg_key_id: A14FE591
+zabbix_version: '5.0'
+zabbix_database_name: 'zabbix'
+zabbix_database_user: 'zabbix'
+zabbix_timezone: 'Europe/Tallinn'
+zabbix_webui_url: 'zabbix.thesisbs.eu'

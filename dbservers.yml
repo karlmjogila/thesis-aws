@@ -26,6 +26,10 @@
       include_role:
         name: patching
       when: hostvars['localhost']['create_initial_vpc'] is defined
+    - name: Install common packages
+      include_role:
+        name: common
+      when: hostvars['localhost']['create_initial_vpc'] is defined
     - name: Configure database servers
       include_role:
         name: mysql

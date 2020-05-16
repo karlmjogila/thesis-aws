@@ -1,0 +1,33 @@
+---
+- name: Update monitoring security group
+  ec2_group:
+    name: "{{ vpc_name }}_monitoring_sg"
+    description: "SG for monitoring"
+    group_id: "{{ monitoring_sg_id }}"
+    vpc_id: "{{ vpc_id }}"
+    state: present
+    rules:
+      - proto: tcp
+        from_port: 10051
+        to_port: 10051
+        group_id: "{{ webserver_sg_owner }}/{{ webserver_sg_id }}/{{ webserver_sg_name }}"
+      - proto: tcp
+        from_port: 10051
+        to_port: 10051
+        group_id: "{{ bastion_sg_owner }}/{{ bastion_sg_id }}/{{ bastion_sg_name }}"
+      - proto: tcp
+        from_port: 10051
+        to_port: 10051
+        group_id: "{{ database_sg_owner }}/{{ database_sg_id }}/{{ database_sg_name }}"
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        group_id: "{{ bastion_sg_owner }}/{{ bastion_sg_id }}/{{ bastion_sg_name }}"
+      - proto: tcp
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0

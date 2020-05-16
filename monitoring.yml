@@ -15,12 +15,6 @@
       vars:
         fetch_vpc_info: True
       when: hostvars['localhost']['create_initial_vpc'] is not defined
-    - name: Create DNS entry
-      include_role:
-        name: route53
-      vars:
-        dns_name: "{{ zabbix_webui_url }}"
-        dns_ip: "{% if create_initial_vpc is defined and domain_name != ''  %}{{ monitoring_host_name }}_ip{% else %}{{ hostvars['localhost']['monitoring_ip'] }}{% endif %}"
 
 - hosts: monitoring
   become: true
@@ -33,12 +27,36 @@
       include_role:
         name: patching
       when: hostvars['localhost']['create_initial_vpc'] is defined
+    - name: Install common packages
+      include_role:
+        name: common
+      when: hostvars['localhost']['create_initial_vpc'] is defined
     - name: Configure monitoring
       include_role:
         name: zabbix
       vars:
         configure_monitoring_host: True
       when: hostvars['localhost']['create_initial_vpc'] is defined
+
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ AWS_ACCESS_KEY_ID }}"
+    AWS_SECRET_ACCESS_KEY: "{{ AWS_SECRET_ACCESS_KEY }}"
+    AWS_REGION: "{{ AWS_REGION  }}"
+  vars_files:
+    - keys
+  tasks:
+    - name: Set fact
+      set_fact:
+        dns_ip_value: "{{ monitoring_host_name }}_ip"
+    - name: Create DNS entry
+      include_role:
+        name: route53
+      vars:
+        dns_name: "{{ zabbix_webui_url }}"
+        dns_ip: "{% if create_initial_vpc is defined and domain_name != ''  %}{{hostvars['localhost'][dns_ip_value]}}{% else %}{{ hostvars['localhost']['monitoring_public_ip'] }}{% endif %}"
 
 - hosts: monitoring
   become: true

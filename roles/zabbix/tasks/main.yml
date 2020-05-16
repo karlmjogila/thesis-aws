@@ -6,3 +6,7 @@
 - name: Configure monitoring host
   include_tasks: configure_monitoring.yml
   when: configure_monitoring_host is defined and configure_monitoring_host == True
+
+- name: Configure agent
+  include_tasks: configure_agent.yml
+  when: zabbix_agent is defined and zabbix_agent == True

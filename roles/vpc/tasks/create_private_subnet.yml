@@ -1,5 +1,5 @@
 ---
-- name: Create private subnet for database servers
+- name: Create private subnet
   ec2_vpc_subnet:
     state: present
     vpc_id: "{{ vpc_id }}"

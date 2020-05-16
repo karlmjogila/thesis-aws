@@ -25,3 +25,5 @@
 - name: Assign db servers security group ID to a variable
   set_fact:
     database_sg_id: "{{ database_sg.group_id }}"
+    database_sg_owner: "{{ database_sg.owner_id }}"
+    database_sg_name: "{{ database_sg.group_name }}"

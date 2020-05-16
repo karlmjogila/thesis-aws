@@ -31,17 +31,18 @@
     - "{{ monitoring_host_name }}"
 
 - name: Set monitoring host IP to a variable
+  vars:
+    ip_string: "{{ item }}_host_ip"
   set_fact:
+    monitoring_private_ip: "{{ hostvars['localhost'][ip_string] }}"
     "{{ item }}_ip": "{{ elastic_ip.results | map(attribute='public_ip') | join }}"
   with_items:
     - "{{ monitoring_host_name }}"
 
 - name: Add private ip to in-memory group
-  vars:
-    ip_string: "{{ item }}_host_ip"
   add_host:
     hostname: "{{ item }}"
-    ansible_host: "{{ hostvars['localhost'][ip_string] }}"
+    ansible_host: "{{ monitoring_private_ip }}"
     groups:
       - monitoring
   with_items:
