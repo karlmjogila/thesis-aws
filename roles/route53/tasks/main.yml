@@ -1,0 +1,10 @@
+---
+- name: Create DNS entry for "{{ dns_name }}"
+  route53:
+    zone: "{{ domain_name }}"
+    record: "{{ dns_name }}.{{ domain_name }}"
+    type: A
+    value: "{{ dns_ip }}"
+    ttl: 300
+    state: present
+    wait: yes

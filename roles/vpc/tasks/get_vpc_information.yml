@@ -86,5 +86,12 @@
   set_fact:
     bastion_ip: "{{ bastion_instance_info.instances[0].public_ip_address }}"
 
-- name: debug
-  debug: msg="{{ bastion_ip }}"
+- name: Get monitoring instance info
+  ec2_instance_info:
+    filters:
+      "tag:Name": "{{ monitoring_host_name }}"
+  register: monitoring_instance_info
+
+- name: Set monitoring host IP to a variable
+  set_fact:
+    monitoring_ip: "{{ monitoring_instance_info.instances[0].public_ip_address }}"
