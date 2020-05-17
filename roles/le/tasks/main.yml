@@ -5,4 +5,4 @@
 
 - name: Upload certificate to other instances
   include_tasks: upload_certificate.yml
-  when: issue_le_certificate == True and upload_certificate == True and manage_dns is defined and manage_dns == True
+  when: issue_le_certificate is defined and issue_le_certificate == True and upload_certificate is defined and upload_certificate == True and manage_dns is defined and manage_dns == True

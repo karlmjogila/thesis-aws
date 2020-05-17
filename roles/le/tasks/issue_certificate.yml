@@ -59,10 +59,12 @@
     wait: yes
     value: '"{{ dns_challenge.challenge_data[wildcard]["dns-01"]["resource_value"] }}"'
     overwrite: yes
+  when: dns_challenge.changed
 
 - name: Wait for DNS record to expire
   pause:
     seconds: 120
+  when: dns_challenge.changed
 
 - name: Let the challenge be validated and retrieve the cert and intermediate certificate
   acme_certificate:
