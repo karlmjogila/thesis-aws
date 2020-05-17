@@ -8,14 +8,14 @@
 
 - name: Upload {{ domain_name }} certificate
   copy:
-    src: "./ssl/{{ domain_name }}.crt"
+    src: "{{ certificate_directory }}/{{ domain_name }}.crt"
     dest: "/etc/ssl/{{ domain_name }}/{{ domain_name }}.crt"
     owner: root
     group: root
 
 - name: Upload {{ domain_name }} private key
   copy:
-    src: "./ssl/{{ domain_name }}.key"
+    src: "{{ certificate_directory }}/{{ domain_name }}.key"
     dest: "/etc/ssl/{{ domain_name }}/{{ domain_name }}.key"
     owner: root
     group: root

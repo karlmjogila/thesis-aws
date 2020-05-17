@@ -123,3 +123,15 @@
     - zabbix-server
     - nginx
     - php7.4-fpm
+
+- name: Set fact
+  set_fact:
+    dns_ip_value: "{{ monitoring_host_name }}_ip"
+
+- name: Manage DNS entry
+  include_tasks: manage_dns_entry.yml
+  vars:
+    dns_name: "{{ zabbix_webui_url }}"
+    dns_ip: "{% if create_initial_vpc is defined and domain_name != ''  %}{{hostvars['localhost'][dns_ip_value]}}{% else %}{{ hostvars['localhost']['monitoring_public_ip'] }}{% endif %}"
+  when: load_balancer_setup is not defined or load_balancer_setup != True and manage_dns is defined and manage_dns == True
+  

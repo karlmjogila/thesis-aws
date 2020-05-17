@@ -37,11 +37,6 @@
       vars:
         configure_database_host: True
       when: hostvars['localhost']['create_initial_vpc'] is defined
-    - name: Configure backups
-      include_role:
-        name: duplicity
-      vars:
-        configure_duplicity_backups: True
 
 - hosts: database
   become: true
@@ -61,8 +56,3 @@
       vars:
         configure_database_host: True
       when: hostvars['localhost']['create_initial_vpc'] is not defined
-    - name: Configure backups
-      include_role:
-        name: duplicity
-      vars:
-        configure_duplicity_backups: True

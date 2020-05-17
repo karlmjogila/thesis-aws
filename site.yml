@@ -4,4 +4,4 @@
 - import_playbook: monitoring.yml
 - import_playbook: webservers.yml
 - import_playbook: dbservers.yml
-# - import_playbook: backups.yml
+- import_playbook: backups.yml

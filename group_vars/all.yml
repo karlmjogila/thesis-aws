@@ -7,6 +7,8 @@ monitoring_host_name: 'zbx01'
 backup_s3_bucket_name: 'duplicity-database-backups-thesis'
 # Private key location
 private_key_location: /home/ansible/.ssh/aws/Frankfurt.pem
+# DNS management
+manage_dns: True
 # Let's encrypt variables
 certificate_directory: '/home/ansible/ansible/thesis/ssl'
 issue_le_certificate: True

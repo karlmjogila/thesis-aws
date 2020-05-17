@@ -6,14 +6,14 @@
 
 - name: Create private key directory
   file:
-    path: './ssl'
+    path: '{{ certificate_directory }}'
     state: directory
     owner: ansible
     group: ansible
 
 - name: Create private key for ACME account
   openssl_privatekey:
-    path: "./ssl/account.key"
+    path: "{{ certificate_directory }}/account.key"
     size: 4096
 
 - name: Create private key for certificate account

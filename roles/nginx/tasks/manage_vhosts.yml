@@ -76,4 +76,4 @@
     dns_ip: "{{ dns_ip_value }}"
     dns_state: "{{ item.state | default('present') }}"
   with_items: "{{ vhosts }}"
-  when: load_balancer_setup is not defined or load_balancer_setup != True
+  when: load_balancer_setup is not defined or load_balancer_setup != True and manage_dns is defined and manage_dns == True

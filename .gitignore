@@ -2,4 +2,5 @@ keys
 ansible.cfg
 test.yml
 aws_ec2.yml
+ansible.cfg
 ssl/

@@ -1,8 +1,8 @@
 ---
 - name: Issue wildcard during VPC deploy
-  include_tasks: create_instance.yml
-  when: create_initial_vpc is defined and create_initial_vpc == True and issue_le_certificate == True
+  include_tasks: issue_certificate.yml
+  when: create_initial_vpc is defined and create_initial_vpc == True and issue_le_certificate == True and manage_dns is defined and manage_dns == True
 
 - name: Upload certificate to other instances
   include_tasks: upload_certificate.yml
-  when: issue_le_certificate == True and upload_certificate == True
+  when: issue_le_certificate == True and upload_certificate == True and manage_dns is defined and manage_dns == True
