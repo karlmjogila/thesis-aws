@@ -1,0 +1,47 @@
+---
+- name: Import certificate into aws ACM
+  vars:
+    full_cert_file: "{{ certificate_directory }}/{{ domain_name }}-fullchain.crt"
+    cert_file: "{{ certificate_directory }}/{{ domain_name }}.crt"
+    key_file: "{{ certificate_directory }}/{{ domain_name }}.key"
+  shell: >
+    aws acm import-certificate 
+    --certificate "file://{{ cert_file }}"
+    --private-key "file://{{ key_file }}"
+    --certificate-chain "file://{{ full_cert_file }}"
+    --region "{{ AWS_REGION }}"
+  register: certificate_id
+  delegate_to: localhost
+  become: no
+
+- name: Set webserver instance-id's to variables
+  vars:
+    app1_string: "{{ webserver_host_name[0] }}_host_id"
+    app2_string: "{{ webserver_host_name[1] }}_host_id"
+  set_fact:
+    app1_id: "{{ app1_string }}"
+    app2_id: "{{ app2_string }}"
+  delegate_to: localhost
+  become: no
+
+- name: Create ELB
+  ec2_elb_lb:
+    name: 'ELB'
+    state: present
+    region: "{{ AWS_REGION }}"
+    zone: 'eu-central-1c'
+    instance_ids: ['app1_id', 'app2_id']
+    security_group_ids: "{{ hostvars['localhost']['webserver_sg_id'] }}"
+    subnets: "{{ hostvars['localhost']['public_subnet_id'] }}"
+    listeners:
+      - protocol: http
+        load_balancer_port: 80
+        instance_port: 80
+        proxy_protocol: True
+      - protocol: https
+        load_balancer_port: 443
+        instance_protocol: http
+        instance_port: 80
+        ssl_certificate_id: "{{ (certificate_id.stdout|from_json).CertificateArn }}"
+  delegate_to: localhost
+  become: no

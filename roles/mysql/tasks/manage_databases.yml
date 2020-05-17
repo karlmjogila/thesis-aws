@@ -1,0 +1,100 @@
+---
+- name: Create database
+  mysql_db:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  with_items:
+    - "{{ databases }}"
+
+- name: Create database user from first web server
+  mysql_user:
+    name: "{{ item.user | default(item.name) }}"
+    password: "{{ item.password }}"
+    host: "{{ hostvars['localhost']['web1_private_ip'] }}"
+    priv: "{{ item.name }}.*:ALL,GRANT"
+    state: "{{ item.state | default('present') }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  with_items:
+    - "{{ databases }}"
+    
+- name: Create database user from second web server 
+  mysql_user:
+    name: "{{ item.user | default(item.name) }}"
+    password: "{{ item.password }}"
+    host: "{{ hostvars['localhost']['web2_private_ip'] }}"
+    priv: "{{ item.name }}.*:ALL,GRANT"
+    state: "{{ item.state | default('present') }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  with_items:
+    - "{{ databases }}"
+
+- name: Create replication user
+  mysql_user:
+    name: "{{ item.user_name }}"
+    host: "%"
+    password: "{{ item.password }}"
+    priv: "*.*:REPLICATION SLAVE"
+    state: "{{ item.state | default('present') }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  with_items:
+    - "{{ replication_setup }}"
+  when: mysql_replication_role == 'master'
+  register: create_replication_user
+
+- name: Update authentication type for replication user
+  vars:
+    query: "ALTER USER {{ item.user_name }} IDENTIFIED WITH mysql_native_password BY '{{ item.password }}'"
+  command: mysql -u root --execute "{{ query }}";
+  when: create_replication_user.changed
+  with_items:
+    - "{{ replication_setup }}"
+  
+- name: Configure slave node
+  mysql_replication:
+    mode: getslave
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  ignore_errors: true
+  register: slave
+  when: mysql_replication_role == 'slave'
+
+- name: Set master's IP and hostname to a variable
+  vars:
+    master_hostname: "{{ database_host_name[0] }}"
+  set_fact:
+    master_ip: "{{ hostvars[master_hostname]['ansible_default_ipv4']['address'] }}"
+    master_hostname: "{{ master_hostname }}"
+
+- name: Make sure hosts entries are in place
+  vars:
+    mysql_replication_master_ip: 
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ master_ip }} {{ master_hostname }}"
+  when: mysql_replication_role == 'slave'
+
+- name: Get masters replication status
+  mysql_replication:
+    mode: getmaster
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  delegate_to: "{{ master_hostname }}"
+  when: mysql_replication_role == 'slave'
+  register: replication_status  
+
+- name: Change the master in slave
+  mysql_replication:
+    mode: changemaster
+    master_host: "{{ master_ip }}"
+    master_user: "{{ replication_setup[0].user_name }}"
+    master_password: "{{ replication_setup[0].password }}"
+    master_log_file: "{{ replication_status.File }}"
+    master_log_pos: "{{ replication_status.Position }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  when: mysql_replication_role == 'slave'
+
+- name: Start slave in slave and start replication
+  mysql_replication:
+    mode: startslave
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  when: mysql_replication_role == 'slave'
+

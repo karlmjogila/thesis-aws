@@ -73,6 +73,10 @@
   notify:
     - Reload nginx
 
+# - name: Manage Elastic Load Balancer
+#   include_tasks: manage_elb.yml
+#   when: load_balancer_setup is defined and load_balancer_setup == True
+
 - name: Manage vhosts
   include_tasks: manage_vhosts.yml
   when: vhosts is defined

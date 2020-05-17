@@ -18,18 +18,18 @@
 
 - name: Create private key for certificate account
   openssl_privatekey:
-    path: "./ssl/{{ le_cert_domain }}.key"
+    path: "{{ certificate_directory }}/{{ le_cert_domain }}.key"
     size: 4096
 
 - name: Generate CSR for {{ le_cert_domain }}
   openssl_csr:
-    path: "./ssl/{{ le_cert_domain }}.csr"
-    privatekey_path: "./ssl/{{ le_cert_domain }}.key"
+    path: "{{ certificate_directory }}/{{ le_cert_domain }}.csr"
+    privatekey_path: "{{ certificate_directory }}/{{ le_cert_domain }}.key"
     common_name: "{{ wildcard }}"
 
 - name: Make sure ACME account exists
   acme_account:
-    account_key_src: "./ssl/account.key"
+    account_key_src: "{{ certificate_directory }}//account.key"
     acme_version: 2
     acme_directory: 'https://acme-v02.api.letsencrypt.org/directory'
     state: present
@@ -42,9 +42,9 @@
     modify_account: no
     acme_directory: 'https://acme-v02.api.letsencrypt.org/directory'
     acme_version: 2
-    account_key_src: "./ssl/account.key"
-    src: "./ssl/{{ le_cert_domain }}.csr"
-    cert: "./ssl/{{ le_cert_domain }}.crt"
+    account_key_src: "{{ certificate_directory }}/account.key"
+    src: "{{ certificate_directory }}/{{ le_cert_domain }}.csr"
+    cert: "{{ certificate_directory }}/{{ le_cert_domain }}.crt"
     challenge: dns-01
     remaining_days: 60
   register: dns_challenge
@@ -67,11 +67,11 @@
 - name: Let the challenge be validated and retrieve the cert and intermediate certificate
   acme_certificate:
     modify_account: no
-    account_key_src: "./ssl/account.key"
-    src: "./ssl/{{ le_cert_domain }}.csr"
-    cert: "./ssl/{{ le_cert_domain }}.crt"
-    fullchain: "./ssl/{{ le_cert_domain }}-fullchain.crt"
-    chain: "./ssl/{{ le_cert_domain }}-intermediate.crt"
+    account_key_src: "{{ certificate_directory }}/account.key"
+    src: "{{ certificate_directory }}/{{ le_cert_domain }}.csr"
+    cert: "{{ certificate_directory }}/{{ le_cert_domain }}.crt"
+    fullchain: "{{ certificate_directory }}/{{ le_cert_domain }}-fullchain.crt"
+    chain: "{{ certificate_directory }}/{{ le_cert_domain }}-intermediate.crt"
     challenge: dns-01
     acme_version: 2
     acme_directory: 'https://acme-v02.api.letsencrypt.org/directory'

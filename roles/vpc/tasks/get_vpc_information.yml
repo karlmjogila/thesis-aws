@@ -98,3 +98,22 @@
   set_fact:
     monitoring_public_ip: "{{ monitoring_instance_info.instances[0].public_ip_address }}"
     monitoring_private_ip: "{{ monitoring_instance_info.instances[0].private_ip_address }}"
+
+- name: Get first web server instance info
+  ec2_instance_info:
+    filters:
+      "tag:Name": "{{ webserver_host_name[0] }}"
+      instance-state-name: running
+  register: webserver1_instance_info
+
+- name: Get second web server instance info
+  ec2_instance_info:
+    filters:
+      "tag:Name": "{{ webserver_host_name[1] }}"
+      instance-state-name: running
+  register: webserver2_instance_info
+
+- name: Set web server private ip's to fact
+  set_fact:
+    web1_private_ip: "{{ webserver1_instance_info.instances[0].private_ip_address }}"
+    web2_private_ip: "{{ webserver2_instance_info.instances[0].private_ip_address }}"

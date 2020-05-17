@@ -168,7 +168,7 @@ ServerActive={{ hostvars['localhost']['monitoring_private_ip'] }}
 # Default:
 # Hostname=
 
-Hostname={{ ansible_hostname }}
+Hostname={{ inventory_hostname }}
 
 ### Option: HostnameItem
 #	Item used for generating Hostname if it is undefined. Ignored if Hostname is defined.

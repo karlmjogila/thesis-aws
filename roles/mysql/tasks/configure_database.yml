@@ -8,3 +8,81 @@
 - name: Configure users
   include_role:
     name: users
+
+# Configure Zabbix agent
+- name: Configure Zabbix agent
+  include_role:
+    name: zabbix
+  vars:
+    zabbix_agent: True
+
+- name: Add host to Zabbix
+  zabbix_host:
+    server_url: "https://{{ zabbix_webui_url }}"
+    login_user: Admin
+    login_password: "{{ zabbix_admin_password }}"
+    host_name: "{{ inventory_hostname }}"
+    status: enabled
+    state: present
+    tls_psk_identity: "{{ zabbix_tls_identity_name }}"
+    tls_connect: 2
+    tls_psk: "{{ zabbix_tls_identity_password }}"
+    tls_accept: 2
+    host_groups:
+      - Linux servers
+    link_templates:
+      - Template OS Linux by Zabbix agent
+      - Template DB MySQL by Zabbix agent
+    interfaces:
+      - type: 1
+        main: 1
+        useip: 1
+        ip: "{{ ansible_default_ipv4.address }}"
+    validate_certs: no
+
+- name: Install MySQL package
+  apt:
+    name: mysql-server
+    state: latest
+    update_cache: yes
+
+- name: Install pymysql
+  pip:
+    name: pymysql
+    state: present
+
+- name: Configure MySQL server
+  template:
+    src: my.cnf.j2
+    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Restart mysql
+
+- name: Start and enable MySQL database service
+  service:
+    name: mysql
+    state: started
+    enabled: yes
+
+- name: Remove anonymous users
+  mysql_user:
+    name: ''
+    host: "{{ item }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    state: absent
+  with_items:
+    - localhost
+    - 127.0.0.1
+    - ::1
+
+- name: Remove test database if present
+  mysql_db:
+    name: test
+    state: absent
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Manage databases
+  include_tasks: manage_databases.yml

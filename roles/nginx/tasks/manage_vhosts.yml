@@ -53,16 +53,21 @@
 
 - name: Enable nginx configuration
   file:
-    src: "/etc/nginx/sites-available/{{ item.name }}"
+    src: "/etc/nginx/sites-available/{{ item.name }}.conf"
     dest: "/etc/nginx/sites-enabled/{{ item.name }}.conf"
     state: "{{ item.state | default('link') }}"
   with_items: "{{ vhosts }}"
   notify:
     - Test nginx config
 
-- name: Set DNS record ip to variable
+- name: Set instance IP public ip to a variable
+  vars:
+    ip_string: "{{ item }}_public_ip"
   set_fact:
-    dns_ip_value: "{{ hostvars[inventory_hostname]['public_ip_address'] }}"
+    dns_ip_value: "{{ hostvars['localhost'][ip_string] }}"
+  when: load_balancer_setup is not defined or load_balancer_setup != True
+  with_items:
+    - "{{ webserver_host_name }}"
 
 - name: Manage DNS entry
   include_tasks: manage_dns_entry.yml

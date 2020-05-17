@@ -19,6 +19,8 @@
 - include: create_db_sg.yml
 # Update monitoring security group
 - include: update_monitoring_sg.yml
+# Update database security group
+- include: update_db_sg.yml
 # Create NAT gateway for private subnet
 - include: create_nat_gw.yml
 # Create route table for private subnet

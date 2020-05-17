@@ -1,3 +1,0 @@
-vhosts:
-  - name: 'test.thesisbs.eu'
-    state: 'absent'
