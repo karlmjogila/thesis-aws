@@ -17,6 +17,7 @@
       loop:
         - vpc
         - bastion
+        - le
         - zabbix
         - nginx
         - mysql
