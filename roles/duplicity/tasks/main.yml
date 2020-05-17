@@ -1,4 +1,4 @@
 ---
-- name: Deploy bastion instance during VPC deploy
-  include_tasks: create_instance.yml
-  when: create_initial_vpc is defined and create_initial_vpc == True
+- name: Configure duplicity backup on database nodes
+  include_tasks: configure_duplicity.yml
+  when: configure_duplicity_backups is defined and configure_duplicity_backups == True

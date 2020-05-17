@@ -4,7 +4,7 @@ bastion_host_name: 'bastion'
 webserver_host_name: ['nginx1', 'nginx2']
 database_host_name: ['db01', 'db02']
 monitoring_host_name: 'zbx01'
-backup_s3_bucket_name: 'duplicity-backups'
+backup_s3_bucket_name: 'duplicity-database-backups-thesis'
 # Private key location
 private_key_location: /home/ansible/.ssh/aws/Frankfurt.pem
 # Let's encrypt variables
@@ -26,6 +26,9 @@ project_env: 'development'
 key_name: Frankfurt
 instance_type: t3.micro
 image_id: ami-05c26ae4789875080
+# Backups information
+s3_bucket_name: 'duplicity-database-backups-thesis'
+gpg_key_email: 'karlmjogila@gmail.com'
 # Users and groups
 users:
   - name: karl

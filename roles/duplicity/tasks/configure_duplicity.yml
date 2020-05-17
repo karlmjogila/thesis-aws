@@ -1,0 +1,58 @@
+---
+- name: Install Duplicity
+  apt:
+    name: duplicity
+    state: latest
+    update_cache: yes
+
+- name: Upload gpg key generation script
+  template:
+    src: gen_gpg.j2
+    dest: /root/duplicity_gpg
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Generate gpg key
+  command: 'gpg --batch --generate-key /root/duplicity_gpg'
+  args:
+    chdir: /root
+  become: yes
+  become_user: root
+
+- name: Create duplicity credentials file
+  template:
+    src: duplicity_credentials.j2
+    dest: /root/.duplicity
+    owner: root
+    group: root
+    mode: '0600'
+  become: yes
+  become_user: root
+
+- name: Create backup directory
+  file:
+    path: /srv/backup/mysql
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Upload backup script
+  template:
+    src: backup_script.sh.j2
+    dest: /srv/backup/backup_script.sh
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Configure backups
+  cron:
+    name: Duplicity backups
+    weekday: "*"
+    hour: "23"
+    minute: "0"
+    user: root
+    job: "/srv/backup/backup_script.sh {{ s3_bucket_name }}"
+    cron_file: ansible_auto_backups
+

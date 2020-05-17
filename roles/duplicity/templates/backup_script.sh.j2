@@ -1,0 +1,24 @@
+#!/bin/bash
+
+BACKUP_DIR="/srv/backup/mysql"
+BUCKET=$1
+VERBOSE="-v 4"
+S3_PARAMS="--s3-european-buckets --s3-use-new-style"
+
+{% for i in databases %}
+mysqldump {{ i.name }} --single-transaction=TRUE > ${BACKUP_DIR}/{{ i.name }}.sql
+{% endfor %}
+
+# Load the duplicity GPG key from the root user keychain
+GPG_KEY=$(gpg --list-keys duplicity | grep pub | grep -E -o '2048R/([A-Z,0-9]+)' | cut -d/ -f2)
+
+# Load the GPG key passphrase and trtest IAM user credentials
+[[ -s ~/.duplicity ]]  && . ~/.duplicity || { echo "File ~/.duplicity not found" 1>&2; exit 1; }
+
+# Upload to S3 and maintain the backup size
+/usr/bin/duplicity $S3_PARAMS --encrypt-key ${GPG_KEY} --asynchronous-upload ${VERBOSE} incr --full-if-older-than 7D ${BACKUP_DIR} "s3+http://${BUCKET}/${HOSTNAME}/${BACKUP_DIR}"
+if [ ! $! ]
+then
+	/usr/bin/duplicity $S3_PARAMS ${VERBOSE} remove-all-but-n-full 12 --force "s3+http://${BUCKET}/${HOSTNAME}/${BACKUP_DIR}"
+	/usr/bin/duplicity $S3_PARAMS ${VERBOSE} remove-all-inc-of-but-n-full 4 --force "s3+http://${BUCKET}/${HOSTNAME}/${BACKUP_DIR}"
+fi
