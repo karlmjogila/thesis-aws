@@ -1,0 +1,11 @@
+---
+- name: Test nginx config
+  shell: nginx -t
+  notify:
+    - Reload nginx
+
+- name: Reload nginx
+  service: name=nginx state=reloaded
+
+- name: Restart nginx
+  service: name=nginx state=restarted

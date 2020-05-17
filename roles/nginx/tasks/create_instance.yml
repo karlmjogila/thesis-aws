@@ -1,11 +1,14 @@
 ---
+- name: Set subnet to a fact
+  set_fact:
+    subnet_group: "{% if load_balancer_setup is not defined or load_balancer_setup != True %}public{% elif load_balancer_setup is defined and load_balancer_setup == True %}private{% else %}public{% endif %}"
 - name: Create webserver hosts
   include_role:
     name: provisioning
   vars:
     instance_name: "{{ item }}"
     instance_role: "webserver"
-    subnet_id: "{{ private_subnet_id }}"
+    subnet_id: "{% if subnet_group == 'public' %}{{ public_subnet_id }}{% else %}{{ private_subnet_id }}{% endif %}"
     security_group: "{{ webserver_sg_id }}"
   with_items:
     - "{{ webserver_host_name }}"
@@ -18,6 +21,19 @@
     "{{ item }}_host_ip": "{{ hostvars['localhost'][fact_string].instances[0].private_ip_address }}"
   with_items:
     - "{{ webserver_host_name }}"
+
+- name: Assign elastic IP to webserver host
+  vars:
+    fact_string: "{{ item }}_host_id"
+  ec2_eip:
+    device_id: "{{ hostvars['localhost'][fact_string] }}"
+    in_vpc: true
+    state: present
+  register: elastic_ip
+  with_items:
+    - "{{ webserver_host_name }}"
+  when: subnet_group == 'public'
+  
 
 - name: Add private ip to in-memory group
   vars:

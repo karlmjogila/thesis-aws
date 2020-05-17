@@ -1,0 +1,15 @@
+server {
+  listen 80 default_server fastopen=500;
+  server_name "";
+
+  root /var/www/html;
+
+  location / {
+      return 444;
+  }
+  location /basic_status {
+    stub_status;
+    allow 127.0.0.1;        #only allow requests from localhost
+    deny all;               #deny all other hosts
+  }
+}

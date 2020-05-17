@@ -60,14 +60,19 @@
     owner: root
     group: root
     mode: '0644'
+  notify:
+    - Restart nginx
 
-- name: Remove default vhost
-  file:
-    path: /etc/nginx/sites-enabled/default
-    state: absent
+- name: Configure default site for zabbix checks
+  template:
+    src: default.conf.j2
+    dest: /etc/nginx/sites-enabled/default
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Reload nginx
 
-
-
-
-
-# - name: Configure PHP
+- name: Manage vhosts
+  include_tasks: manage_vhosts.yml
+  when: vhosts is defined

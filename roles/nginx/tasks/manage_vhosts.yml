@@ -1,1 +1,74 @@
 ---
+- name: Create vhost directory
+  file:
+    path: "/srv/vhosts/{{ item.name }}"
+    state: "{{ item.state | default('directory') }}"
+    owner: root
+    group: developers
+    mode: '0775'
+  with_items: "{{ vhosts }}"
+
+- name: Create html directory
+  file:
+    path: "/srv/vhosts/{{ item.name }}/html"
+    state: "{{ item.state | default('directory') }}"
+    owner: root
+    group: developers
+    mode: '0775'
+  with_items: "{{ vhosts }}"
+
+- name: Create log directory
+  file:
+    path: "/srv/vhosts/{{ item.name }}/log"
+    state: "{{ item.state | default('directory') }}"
+    owner: root
+    group: developers
+    mode: '0640'
+  with_items: "{{ vhosts }}"
+
+- name: Create tmp directory
+  file:
+    path: "/srv/vhosts/{{ item.name }}/tmp"
+    state: "{{ item.state | default('directory') }}"
+    owner: root
+    group: root
+    mode: '0777'
+  with_items: "{{ vhosts }}"
+
+- name: Upload certificates
+  include_role:
+    name: le
+  vars:
+    upload_certificate: True
+  when: issue_le_certificate == True
+
+- name: Create nginx configuration
+  template:
+    src: vhost.conf.j2
+    dest: "/etc/nginx/sites-available/{{ item.name }}.conf"
+    owner: root
+    group: root
+    mode: '0644'
+  with_items: "{{ vhosts }}"
+
+- name: Enable nginx configuration
+  file:
+    src: "/etc/nginx/sites-available/{{ item.name }}"
+    dest: "/etc/nginx/sites-enabled/{{ item.name }}.conf"
+    state: "{{ item.state | default('link') }}"
+  with_items: "{{ vhosts }}"
+  notify:
+    - Test nginx config
+
+- name: Set DNS record ip to variable
+  set_fact:
+    dns_ip_value: "{{ hostvars[inventory_hostname]['public_ip_address'] }}"
+
+- name: Manage DNS entry
+  include_tasks: manage_dns_entry.yml
+  vars:
+    dns_name: "{{ item.name }}"
+    dns_ip: "{{ dns_ip_value }}"
+    dns_state: "{{ item.state | default('present') }}"
+  with_items: "{{ vhosts }}"
+  when: load_balancer_setup is not defined or load_balancer_setup != True

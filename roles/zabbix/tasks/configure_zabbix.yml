@@ -97,15 +97,6 @@
   notify:
     - Restart php-fpm
 
-# - name: Restart services
-#   service:
-#     name: "{{ item }}"
-#     state: restarted
-#   with_items:
-#     - zabbix-server
-#     - nginx
-#     - php7.4-fpm
-
 - name: Enable services
   service:
     name: "{{ item }}"

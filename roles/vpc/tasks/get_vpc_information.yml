@@ -80,6 +80,7 @@
   ec2_instance_info:
     filters:
       "tag:Name": "{{ bastion_host_name }}"
+      instance-state-name: running
   register: bastion_instance_info
 
 - name: Set bastion host IP to a variable
@@ -90,11 +91,10 @@
   ec2_instance_info:
     filters:
       "tag:Name": "{{ monitoring_host_name }}"
+      instance-state-name: running
   register: monitoring_instance_info
 
 - name: Set monitoring host IP's to a variable
   set_fact:
     monitoring_public_ip: "{{ monitoring_instance_info.instances[0].public_ip_address }}"
     monitoring_private_ip: "{{ monitoring_instance_info.instances[0].private_ip_address }}"
-
-
