@@ -80,4 +80,4 @@
 
 - name: Manage vhosts
   include_tasks: manage_vhosts.yml
-  when: vhosts is defined
+  when: vhosts is defined and vhosts != ''

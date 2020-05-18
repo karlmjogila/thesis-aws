@@ -29,3 +29,31 @@ NB! Use a secure password for encryption, as this file will contain sensitive da
 4. Specify the required paramaters in group_vars/all.yml file.
 5. Run the playbook
 `ansible-playbook site.yml --ask-vault-pass`
+
+## Adding virtual hosts
+
+To add virtual hosts, you can either choose between issuing them on an instance level or cluster level. When deploying on separate instances, use host_vars/nginx01.yml or host_vars/nginx02.yml.
+#### NB! When web server hostnames were changed in the group_vars/add.yml file, then the file where to put the vhost configuration is host_vars/new_instance_name.yml
+
+```
+vhosts:
+  - name: test.example.com
+    state: present
+  - name: foo.bar
+    state: absent
+```
+
+## Adding databases
+
+To add databases, add the following contents to group_vars/database.yml
+
+```
+databases:
+  - name: <database name>
+    user: <database user name>
+    password: "{{ <database user password should be specified in keys file> }}"
+    replicate: true
+    state: present
+  - name: <second database>
+    state: absent
+```

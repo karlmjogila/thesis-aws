@@ -87,3 +87,4 @@
 
 - name: Manage databases
   include_tasks: manage_databases.yml
+  when: databases is defined and databases != ''

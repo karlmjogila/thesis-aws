@@ -1,7 +1,7 @@
 ---
 # Instance names
 bastion_host_name: 'bastion'
-webserver_host_name: ['nginx1', 'nginx2']
+webserver_host_name: ['nginx01', 'nginx02']
 database_host_name: ['db01', 'db02']
 monitoring_host_name: 'zbx01'
 # Private key location
@@ -15,7 +15,7 @@ issue_le_certificate: True # Issue LE certificate for webservers
 acme_account_email: 'foo@bar.com'
 # Load balancer setup
 load_balancer_setup: False # Disabled by default, since AWS does not support LE certificates on ELB
-#ssl_certificate_location:
+#ssl_certificate_location: # AWS HTTPS certificate location
 # AWS region
 AWS_REGION: 'eu-central-1'
 # Variables used by VPC role
@@ -49,4 +49,3 @@ zabbix_database_name: 'zabbix'
 zabbix_database_user: 'zabbix'
 zabbix_timezone: 'Europe/Tallinn'
 zabbix_webui_url: 'zabbix.example.com'
-# Vhosts
