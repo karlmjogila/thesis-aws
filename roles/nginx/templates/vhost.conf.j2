@@ -1,3 +1,4 @@
+# https://ssl-config.mozilla.org/#server=nginx&version=1.17.7&config=intermediate&openssl=1.1.1d&guideline=5.4
 {% if issue_le_certificate %}
 server {
   listen 80 default_server fastopen=500;
@@ -26,7 +27,7 @@ server {
   # OCSP stapling
   ssl_stapling on;
   ssl_stapling_verify on;
-  resolver 1.1.1.1 1.0.0.1 valid=300s;
+  resolver 1.1.1.1 valid=300s;
   resolver_timeout 5s;
 
   root /srv/vhosts/{{item.name}}/html;

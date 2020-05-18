@@ -1,4 +1,5 @@
 ---
+# https://encoretechnologies.github.io/blog/2018/06/ansiblepatchingautomation/
 - name: Wait for any possibly running unattended upgrade to finish
   raw: systemd-run --property="After=apt-daily.service apt-daily-upgrade.service" --wait /bin/true
 

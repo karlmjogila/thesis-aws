@@ -1,18 +1,19 @@
 ---
-- name: Import certificate into aws ACM
-  vars:
-    full_cert_file: "{{ certificate_directory }}/{{ domain_name }}-fullchain.crt"
-    cert_file: "{{ certificate_directory }}/{{ domain_name }}.crt"
-    key_file: "{{ certificate_directory }}/{{ domain_name }}.key"
-  shell: >
-    aws acm import-certificate 
-    --certificate "file://{{ cert_file }}"
-    --private-key "file://{{ key_file }}"
-    --certificate-chain "file://{{ full_cert_file }}"
-    --region "{{ AWS_REGION }}"
-  register: certificate_id
-  delegate_to: localhost
-  become: no
+# Let's Encrypt certificates does not work with ELB
+# - name: Import certificate into aws ACM
+#   vars:
+#     full_cert_file: "{{ certificate_directory }}/{{ domain_name }}-fullchain.crt"
+#     cert_file: "{{ certificate_directory }}/{{ domain_name }}.crt"
+#     key_file: "{{ certificate_directory }}/{{ domain_name }}.key"
+#   shell: >
+#     aws acm import-certificate 
+#     --certificate "file://{{ cert_file }}"
+#     --private-key "file://{{ key_file }}"
+#     --certificate-chain "file://{{ full_cert_file }}"
+#     --region "{{ AWS_REGION }}"
+#   register: certificate_id
+#   delegate_to: localhost
+#   become: no
 
 - name: Set webserver instance-id's to variables
   vars:
@@ -29,7 +30,6 @@
     name: 'ELB'
     state: present
     region: "{{ AWS_REGION }}"
-    zone: 'eu-central-1c'
     instance_ids: ['app1_id', 'app2_id']
     security_group_ids: "{{ hostvars['localhost']['webserver_sg_id'] }}"
     subnets: "{{ hostvars['localhost']['public_subnet_id'] }}"
@@ -42,6 +42,6 @@
         load_balancer_port: 443
         instance_protocol: http
         instance_port: 80
-        ssl_certificate_id: "{{ (certificate_id.stdout|from_json).CertificateArn }}"
+        ssl_certificate_id: "{{ ssl_certificate_location }}"
   delegate_to: localhost
   become: no

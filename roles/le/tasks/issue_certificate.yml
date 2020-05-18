@@ -1,4 +1,8 @@
 ---
+# https://docs.ansible.com/ansible/latest/modules/acme_account_module.html
+# https://docs.ansible.com/ansible/latest/modules/acme_certificate_module.html#acme-certificate-module
+# https://docs.ansible.com/ansible/latest/modules/route53_module.html
+
 - name: Set domain name to a fact
   set_fact:
     le_cert_domain: "{{ domain_name }}"

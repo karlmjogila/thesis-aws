@@ -5,6 +5,10 @@
     state: latest
     update_cache: yes
 
+- name: Install boto module
+  pip:
+    name: boto
+
 - name: Upload gpg key generation script
   template:
     src: gen_gpg.j2

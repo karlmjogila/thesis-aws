@@ -1,4 +1,5 @@
 ---
+# https://topic.alibabacloud.com/a/managing-mysql-replication-with-ansible_1_41_30026734.html
 - name: Create database
   mysql_db:
     name: "{{ item.name }}"

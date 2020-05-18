@@ -1,4 +1,5 @@
 ---
+# https://docs.ansible.com/ansible/latest/modules/zabbix_host_module.html
 # Configure SSH
 - name: Configure SSH
   include_role:
@@ -73,9 +74,9 @@
   notify:
     - Reload nginx
 
-# - name: Manage Elastic Load Balancer
-#   include_tasks: manage_elb.yml
-#   when: load_balancer_setup is defined and load_balancer_setup == True
+- name: Manage Elastic Load Balancer
+  include_tasks: manage_elb.yml
+  when: load_balancer_setup is defined and load_balancer_setup == True
 
 - name: Manage vhosts
   include_tasks: manage_vhosts.yml

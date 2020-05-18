@@ -1,4 +1,5 @@
 ---
+# https://docs.ansible.com/ansible/latest/modules/user_module.html
 - name: Create user
   user:
     name: "{{ item.name }}"

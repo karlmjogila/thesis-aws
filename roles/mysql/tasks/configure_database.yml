@@ -1,4 +1,5 @@
 ---
+# https://docs.ansible.com/ansible/latest/modules/zabbix_host_module.html
 # Configure SSH
 - name: Configure SSH
   include_role:

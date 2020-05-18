@@ -4,18 +4,18 @@ bastion_host_name: 'bastion'
 webserver_host_name: ['nginx1', 'nginx2']
 database_host_name: ['db01', 'db02']
 monitoring_host_name: 'zbx01'
-backup_s3_bucket_name: 'duplicity-database-backups-thesis'
 # Private key location
-private_key_location: /home/ansible/.ssh/aws/Frankfurt.pem
+private_key_location: /home/ansible/.ssh/aws/Frankfurt.pem # REQUIRED, private key loca
 # DNS management
-manage_dns: True
+domain_name: 'example.com' # Recommended, but not required
+manage_dns: True # Recommended, but not required. Domain must be present in Route53.
 # Let's encrypt variables
-certificate_directory: '/home/ansible/ansible/thesis/ssl'
-issue_le_certificate: True
-domain_name: 'thesisbs.eu'
-acme_account_email: 'karlmjogila@gmail.com'
+certificate_directory: '/home/ansible/ansible/thesis/ssl' 
+issue_le_certificate: True # Issue LE certificate for webservers
+acme_account_email: 'foo@bar.com'
 # Load balancer setup
-load_balancer_setup: False
+load_balancer_setup: False # Disabled by default, since AWS does not support LE certificates on ELB
+#ssl_certificate_location:
 # AWS region
 AWS_REGION: 'eu-central-1'
 # Variables used by VPC role
@@ -27,17 +27,17 @@ project_env: 'development'
 # EC2 Instance deployment
 key_name: Frankfurt
 instance_type: t3.micro
-image_id: ami-05c26ae4789875080
+image_id: ami-05c26ae4789875080 # Ubuntu 20.04 AMI as of 18.05.2020
 # Backups information
 s3_bucket_name: 'duplicity-database-backups-thesis'
-gpg_key_email: 'karlmjogila@gmail.com'
+gpg_key_email: 'foo@bar.com'
 # Users and groups
 users:
-  - name: karl
-    comment: "Karl Markus Jogila"
+  - name: foo
+    comment: "bar"
     password: '$6$818b1cff6482f9f6$MM1Jjo2zSWRlYNxJFdc0i7AZZ0icmQ9aJ2ryrw1EfkbOdJrpcw9R2p.KEnPrmXrXLH/aO2qZoAZcz5SggI9Kv1'
     state: present
-    admin_user: yes
+    admin_user: yes # Optional, if not specified then user will not have sudo privileges
     ssh_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsUUwakNXVXwOtRLWDhaqr9YwgaZht8AM957FVvurXAxFDw7kDswvtXhEMiB0ije2khocZSnJnTtklVqo8Wd68J/d9ggs3dI2tO51chJW0xTF/62XpXUOwvCUHrK03qMIQwecq3PEC1vUVQ1ynhvE9UIBlM46HBTy6g4W5n+hqZe08OEM0wcTETg5bL2/yh/19ZhFbIJalofc6RU8HjO4zw2IvQyz2txxFZGTKCurfc9ZEiDqcm4++J2YGR2mV63oHO7MO+0NizbDYtoHhdtrQ4+eDthlFkMbdKqpe6BC/3W5/2V+b3icav80EdGw/nuS+KdQxCHSHjdsgQL4/n6W1'
 user_groups:
   - name: developers
@@ -48,4 +48,5 @@ zabbix_version: '5.0'
 zabbix_database_name: 'zabbix'
 zabbix_database_user: 'zabbix'
 zabbix_timezone: 'Europe/Tallinn'
-zabbix_webui_url: 'zabbix.thesisbs.eu'
+zabbix_webui_url: 'zabbix.example.com'
+# Vhosts
